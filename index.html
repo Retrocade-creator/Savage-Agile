@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrocade</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1 class="app-title">Retrocade</h1>
+        <button id="theme-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
+    </header>
+    <main>
+        <div id="main-menu" style="display: block;">
+            <h2>Welcome to Retrocade</h2>
+            <button onclick="startIcebreaker()">Start Icebreaker</button>
+            <button onclick="startWorkingAgreements()">Set Working Agreements</button>
+            <button onclick="startRetrospective()">Start Retrospective</button>
+            <button onclick="clearData()" style="margin-top: 10px; background-color: #ef4444;">Clear Data</button>
+        </div>
+        <div id="icebreaker-section" style="display: none;">
+            <h2>Icebreaker</h2>
+            <select id="icebreaker-presets" onchange="displayIcebreaker()">
+                <option value="">Select an icebreaker...</option>
+                <option value="What’s your favorite team memory?">What’s your favorite team memory?</option>
+                <option value="Share a fun fact about yourself!">Share a fun fact about yourself!</option>
+                <option value="What’s one thing you’re grateful for this week?">What’s one thing you’re grateful for this week?</option>
+                <option value="If you could have any superpower, what would it be?">If you could have any superpower, what would it be?</option>
+                <option value="What’s your go-to comfort food?">What’s your go-to comfort food?</option>
+                <option value="Describe your dream vacation!">Describe your dream vacation!</option>
+                <option value="What’s a hobby you’ve always wanted to try?">What’s a hobby you’ve always wanted to try?</option>
+            </select>
+            <button onclick="skipIcebreaker()" style="margin-left: 10px;">Skip Icebreaker</button>
+            <div id="icebreaker-display" style="display: none; margin-top: 20px;">
+                <h3 id="icebreaker-text"></h3>
+                <button onclick="startWorkingAgreements()">Start Working Agreements</button>
+            </div>
+        </div>
+        <div id="working-agreements-section" style="display: none;">
+            <h2>Working Agreements</h2>
+            <input type="text" id="agreement-input" placeholder="Propose a working agreement...">
+            <button onclick="addAgreement()">Add</button>
+            <ul id="agreement-list"></ul>
+            <div style="margin-top: 20px;">
+                <button onclick="saveAgreements()">Save for Later</button>
+                <button onclick="proceedToRetrospective()" style="margin-left: 10px;">Proceed to Retrospective</button>
+            </div>
+        </div>
+        <div id="retro-sections" style="display: none;">
+            <div id="room-name-section">
+                <h2 id="room-name">Team Retrospective</h2>
+                <button id="edit-room-name">Edit</button>
+                <div id="room-name-edit" style="display: none;">
+                    <input type="text" id="room-name-input" placeholder="Enter room name...">
+                    <button onclick="saveRoomName()">Save</button>
+                </div>
+            </div>
+            <div id="columns-section">
+                <h2>Columns</h2>
+                <div id="token-counter" style="margin-bottom: 10px;">
+                    Tokens remaining: <span id="tokens-remaining">3</span>
+                    <button onclick="resetTokens()" style="margin-left: 10px;">Reset Tokens</button>
+                </div>
+                <select id="column-presets" onchange="prepopulateColumns()">
+                    <option value="">Select a preset...</option>
+                    <option value="custom">Custom</option>
+                    <option value="start-stop-continue">Start, Stop, Continue</option>
+                    <option value="well-didnt-improve">What Went Well, What Didn't, What to Improve</option>
+                    <option value="mad-sad-glad">Mad, Sad, Glad</option>
+                    <option value="lean-coffee">Lean Coffee</option>
+                    <option value="liked-learned-lacked-longed">Liked, Learned, Lacked, Longed For</option>
+                    <option value="four-ls">Four L's (Liked, Learned, Lacked, Longed For)</option>
+                    <option value="keep-add-drop">Keep, Add, Drop</option>
+                    <option value="plus-delta">Plus, Delta</option>
+                    <option value="kalms">KALM (Keep, Add, Less, More)</option>
+                    <option value="stop-start-continue">Stop, Start, Continue</option>
+                    <option value="sailboat">Sailboat (Winds, Anchors, Rocks, Island)</option>
+                    <option value="hot-air-balloon">Hot Air Balloon (Fuel, Weights, Sky, Ground)</option>
+                    <option value="starfish">Starfish (Start, Stop, Continue, Do More, Do Less)</option>
+                    <option value="car-retrospective">Car Retrospective (Engine, Brakes, Road Ahead)</option>
+                    <option value="garden">Garden (Flowers, Weeds, Fertilizer)</option>
+                    <option value="space-mission">Space Mission (Launch, Orbit, Gravity, Stars)</option>
+                    <option value="pirate-ship">Pirate Ship (Sails, Storms, Treasure, Sharks)</option>
+                    <option value="mountain-climb">Mountain Climb (Peak, Base, Gear, Obstacles)</option>
+                    <option value="movie-set">Movie Set (Action, Cut, Script, Props)</option>
+                    <option value="weather-report">Weather Report (Sunny, Cloudy, Stormy, Forecast)</option>
+                    <option value="team-health">Team Health (Energy, Trust, Clarity)</option>
+                    <option value="energy-levels">Energy Levels (High, Low, Recharge)</option>
+                    <option value="trust-circle">Trust Circle (Safe, Risky, Build)</option>
+                    <option value="communication-flow">Communication Flow (Clear, Blocked, Improve)</option>
+                    <option value="collaboration-check">Collaboration Check (Synergy, Silos, Bridges)</option>
+                    <option value="roles-and-goals">Roles and Goals (Defined, Unclear, Align)</option>
+                    <option value="feedback-loop">Feedback Loop (Given, Received, Action)</option>
+                    <option value="team-vibe">Team Vibe (Positive, Tense, Boost)</option>
+                    <option value="workload-balance">Workload Balance (Light, Heavy, Adjust)</option>
+                    <option value="celebration">Celebration (Wins, Challenges, Cheers)</option>
+                    <option value="superhero">Superhero (Powers, Kryptonite, Mission)</option>
+                    <option value="time-machine">Time Machine (Past, Present, Future)</option>
+                    <option value="zoo">Zoo (Lions, Snakes, Monkeys)</option>
+                    <option value="circus">Circus (Acts, Clowns, Audience)</option>
+                    <option value="music-festival">Music Festival (Headliners, Backstage, Crowd)</option>
+                    <option value="art-gallery">Art Gallery (Masterpieces, Sketches, Frames)</option>
+                    <option value="cooking-show">Cooking Show (Ingredients, Recipe, Taste)</option>
+                    <option value="olympics">Olympics (Gold, Silver, Bronze)</option>
+                    <option value="space-exploration">Space Exploration (Stars, Black Holes, Planets)</option>
+                    <option value="road-trip">Road Trip (Destination, Detours, Fuel)</option>
+                    <option value="treasure-hunt">Treasure Hunt (Map, Clues, Treasure)</option>
+                    <option value="game-show">Game Show (Wins, Challenges, Prizes)</option>
+                    <option value="fashion-show">Fashion Show (Runway, Designs, Audience)</option>
+                    <option value="magic-show">Magic Show (Tricks, Illusions, Reveal)</option>
+                    <option value="science-experiment">Science Experiment (Hypothesis, Results, Conclusions)</option>
+                    <option value="detective-case">Detective Case (Clues, Suspects, Solve)</option>
+                    <option value="campfire">Campfire (Stories, Sparks, Warmth)</option>
+                    <option value="world-tour">World Tour (Stops, Highlights, Memories)</option>
+                    <option value="puzzle">Puzzle (Pieces, Fit, Missing)</option>
+                </select>
+                <button onclick="addColumn()">Add Column</button>
+                <div id="custom-columns-form" style="display: none; margin-top: 10px;">
+                    <input type="text" id="custom-column-1" placeholder="Column 1 name">
+                    <input type="text" id="custom-column-2" placeholder="Column 2 name">
+                    <input type="text" id="custom-column-3" placeholder="Column 3 name">
+                    <button onclick="createCustomColumns()">Create</button>
+                </div>
+                <div id="columns-container"></div>
+            </div>
+            <div id="feedback-board">
+                <h2>Feedback</h2>
+                <input type="text" id="feedback-input" placeholder="Add feedback...">
+                <button onclick="addFeedback()">Submit</button>
+                <ul id="feedback-list"></ul>
+            </div>
+            <div id="action-items">
+                <h2>Action Items</h2>
+                <input type="text" id="action-input" placeholder="Add action item...">
+                <button onclick="addActionItem()">Add</button>
+                <ul id="action-list"></ul>
+            </div>
+            <div id="song-voting">
+                <h2>Song Voting</h2>
+                <button onclick="openSongSearchModal()">Search for a Song</button>
+                <div id="song-search-modal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeSongSearchModal()">×</span>
+                        <input type="text" id="song-search-input" placeholder="Search for a song on YouTube...">
+                        <button onclick="searchSongs()">Search</button>
+                        <ul id="song-search-results"></ul>
+                    </div>
+                </div>
+                <ul id="song-list"></ul>
+            </div>
+        </div>
+    </main>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="script.js"></script>
+</body>
+</html>
