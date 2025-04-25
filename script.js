@@ -189,7 +189,7 @@ function loadAppState() {
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
         deleteBtn.className = 'delete-btn';
-        deleteBtn.onclick = () => {
+            deleteBtn.onclick = () => {
             li.remove();
             saveAppState();
         };
@@ -367,6 +367,203 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     loadAppState();
+
+    const container = document.getElementById('columns-container');
+    if (container) {
+        container.addEventListener('dragstart', (e) => {
+            const target = e.target.closest('.column');
+            if (target) {
+                target.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', target.id);
+            }
+        });
+
+        container.addEventListener('dragend', (e) => {
+            const target = e.target.closest('.column');
+            if (target) {
+                target.classList.remove('dragging');
+            }
+        });
+
+        container.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        container.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const draggedId = e.dataTransfer.getData('text/plain');
+            const draggedElement = document.getElementById(draggedId);
+            const target = e.target.closest('.column');
+
+            if (draggedElement && target && draggedElement !== target) {
+                const allColumns = Array.from(container.children);
+                const draggedIndex = allColumns.indexOf(draggedElement);
+                const targetIndex = allColumns.indexOf(target);
+
+                if (draggedIndex < targetIndex) {
+                    container.insertBefore(draggedElement, target.nextSibling);
+                } else {
+                    container.insertBefore(draggedElement, target);
+                }
+                saveAppState();
+            }
+        });
+
+        let touchTarget = null;
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        container.addEventListener('touchstart', (e) => {
+            const target = e.target.closest('.column');
+            if (target) {
+                touchTarget = target;
+                touchTarget.classList.add('dragging');
+                const touch = e.touches[0];
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+                e.preventDefault();
+            }
+        });
+
+        container.addEventListener('touchmove', (e) => {
+            if (touchTarget) {
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - touchStartX;
+                const deltaY = touch.clientY - touchStartY;
+                touchTarget.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+                e.preventDefault();
+            }
+        });
+
+        container.addEventListener('touchend', (e) => {
+            if (touchTarget) {
+                touchTarget.classList.remove('dragging');
+                touchTarget.style.transform = 'translate(0, 0)';
+
+                const touch = e.changedTouches[0];
+                const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.column');
+
+                if (dropTarget && dropTarget !== touchTarget) {
+                    const allColumns = Array.from(container.children);
+                    const draggedIndex = allColumns.indexOf(touchTarget);
+                    const targetIndex = allColumns.indexOf(dropTarget);
+
+                    if (draggedIndex < targetIndex) {
+                        container.insertBefore(touchTarget, dropTarget.nextSibling);
+                    } else {
+                        container.insertBefore(touchTarget, dropTarget);
+                    }
+                    saveAppState();
+                }
+
+                touchTarget = null;
+            }
+        });
+    }
+
+    const leanCoffeeContainer = document.getElementById('lean-coffee-columns-container');
+    if (leanCoffeeContainer) {
+        leanCoffeeContainer.addEventListener('dragstart', (e) => {
+            const target = e.target.closest('.column');
+            if (target) {
+                target.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', target.id);
+            }
+        });
+
+        leanCoffeeContainer.addEventListener('dragend', (e) => {
+            const target = e.target.closest('.column');
+            if (target) {
+                target.classList.remove('dragging');
+            }
+        });
+
+        leanCoffeeContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        leanCoffeeContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const draggedId = e.dataTransfer.getData('text/plain');
+            const draggedElement = document.getElementById(draggedId);
+            const target = e.target.closest('.column');
+
+            if (draggedElement && target && draggedElement !== target) {
+                const allColumns = Array.from(leanCoffeeContainer.children);
+                const draggedIndex = allColumns.indexOf(draggedElement);
+                const targetIndex = allColumns.indexOf(target);
+
+                if (draggedIndex < targetIndex) {
+                    leanCoffeeContainer.insertBefore(draggedElement, target.nextSibling);
+                } else {
+                    leanCoffeeContainer.insertBefore(draggedElement, target);
+                }
+                saveAppState();
+            }
+        });
+
+        let touchTarget = null;
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        leanCoffeeContainer.addEventListener('touchstart', (e) => {
+            const target = e.target.closest('.column');
+            if (target) {
+                touchTarget = target;
+                touchTarget.classList.add('dragging');
+                const touch = e.touches[0];
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+                e.preventDefault();
+            }
+        });
+
+        leanCoffeeContainer.addEventListener('touchmove', (e) => {
+            if (touchTarget) {
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - touchStartX;
+                const deltaY = touch.clientY - touchStartY;
+                touchTarget.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+                e.preventDefault();
+            }
+        });
+
+        leanCoffeeContainer.addEventListener('touchend', (e) => {
+            if (touchTarget) {
+                touchTarget.classList.remove('dragging');
+                touchTarget.style.transform = 'translate(0, 0)';
+
+                const touch = e.changedTouches[0];
+                const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.column');
+
+                if (dropTarget && dropTarget !== touchTarget) {
+                    const allColumns = Array.from(leanCoffeeContainer.children);
+                    const draggedIndex = allColumns.indexOf(touchTarget);
+                    const targetIndex = allColumns.indexOf(dropTarget);
+
+                    if (draggedIndex < targetIndex) {
+                        leanCoffeeContainer.insertBefore(touchTarget, dropTarget.nextSibling);
+                    } else {
+                        leanCoffeeContainer.insertBefore(touchTarget, dropTarget);
+                    }
+                    saveAppState();
+                }
+
+                touchTarget = null;
+            }
+        });
+    }
+
+    console.log('DOM fully loaded');
+    console.log('Checking for room-name-section:', document.getElementById('room-name-section'));
+    const editButton = document.getElementById('edit-room-name');
+    if (editButton) {
+        console.log('Edit button found');
+        editButton.addEventListener('click', toggleEditRoomName);
+    } else {
+        console.error('Edit button not found!');
+        alert('Error: Edit button not found. Check console.');
+    }
 });
 
 function returnToMainMenu() {
@@ -613,51 +810,6 @@ function returnToWorkingAgreements() {
     });
     document.getElementById('working-agreements-section').style.display = 'block';
     saveAppState();
-}
-
-function addAgreement() {
-    console.log('addAgreement called');
-    const input = document.getElementById('agreement-input');
-    const agreementList = document.getElementById('agreement-list');
-    const agreementText = input.value.trim();
-    const preset = document.getElementById('agreement-presets').value;
-
-    if (!input || !agreementList || !preset) {
-        console.error('Agreement elements missing:', { input, agreementList, preset });
-        alert('Error: Agreement elements not found. Check console.');
-        return;
-    }
-
-    if (agreementText !== '') {
-        const li = document.createElement('li');
-        const voteCount = document.createElement('span');
-        voteCount.textContent = '0';
-        voteCount.style.marginRight = '10px';
-        voteCount.className = 'vote-count';
-        const upvoteBtn = document.createElement('button');
-        upvoteBtn.textContent = 'Upvote';
-        upvoteBtn.className = 'upvote-btn';
-        upvoteBtn.onclick = () => {
-            voteCount.textContent = parseInt(voteCount.textContent) + 1;
-            saveAppState();
-        };
-        li.appendChild(voteCount);
-        li.appendChild(upvoteBtn);
-        li.appendChild(document.createTextNode(` ${agreementText}`));
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.onclick = () => {
-            li.remove();
-            saveAppState();
-        };
-        li.appendChild(deleteBtn);
-        agreementList.appendChild(li);
-        input.value = '';
-        saveAppState();
-    } else {
-        alert('Please enter an item before adding.');
-    }
 }
 
 function saveAgreements() {
@@ -1267,102 +1419,3 @@ function resetStoryPointing() {
     const votingSection = document.getElementById('voting-section');
     const voteOptions = document.getElementById('vote-options');
     const resultsList = document.getElementById('vote-results-list');
-    const summary = document.getElementById('vote-summary');
-
-    if (!storyTitleSection || !storyTitleDisplay || !storyTitleInput || !sizingMethodSection || !sizingMethod || !votingSection || !voteOptions || !resultsList || !summary) {
-        console.error('Story pointing reset elements missing:', { storyTitleSection, storyTitleDisplay, storyTitleInput, sizingMethodSection, sizingMethod, votingSection, voteOptions, resultsList, summary });
-        return;
-    }
-
-    storyTitleSection.style.display = 'block';
-    storyTitleDisplay.style.display = 'none';
-    storyTitleInput.value = '';
-    sizingMethodSection.style.display = 'none';
-    sizingMethod.value = '';
-    votingSection.style.display = 'none';
-    voteOptions.innerHTML = '<option value="">Select a size...</option>';
-    storyPointingVotes = [];
-    resultsList.innerHTML = '';
-    summary.textContent = 'No votes yet.';
-    saveAppState();
-}
-
-function returnToMainMenuFromStoryPointing() {
-    console.log('returnToMainMenuFromStoryPointing called');
-    document.getElementById('story-pointing-section').style.display = 'none';
-    document.getElementById('main-menu').style.display = 'block';
-}
-
-function startLeanCoffee() {
-    console.log('startLeanCoffee called');
-    document.getElementById('main-menu').style.display = 'none';
-    document.getElementById('lean-coffee-section').style.display = 'block';
-    resetTokens();
-}
-
-function prepopulateLeanCoffeeColumns() {
-    console.log('prepopulateLeanCoffeeColumns called');
-    const preset = document.getElementById('lean-coffee-presets').value;
-    const customForm = document.getElementById('lean-coffee-custom-columns-form');
-
-    if (!preset || !customForm) {
-        console.error('Preset or custom form missing:', { preset, customForm });
-        alert('Error: Preset or custom form not found. Check console.');
-        return;
-    }
-
-    customForm.style.display = preset === 'custom' ? 'flex' : 'none';
-
-    if (preset === 'custom') return;
-
-    if (!preset) return;
-
-    const container = document.getElementById('lean-coffee-columns-container');
-    if (!container) {
-        console.error('Lean Coffee columns container not found');
-        return;
-    }
-
-    if (container.children.length > 0) {
-        if (!confirm('This will clear existing columns. Continue?')) {
-            document.getElementById('lean-coffee-presets').value = '';
-            return;
-        }
-        container.innerHTML = '';
-        leanCoffeeColumnCount = 0;
-    }
-
-    const presets = {
-        'start-stop-continue': ['Start', 'Stop', 'Continue'],
-        'well-didnt-improve': ['What Went Well', 'What Didn\'t', 'What to Improve'],
-        'mad-sad-glad': ['Mad', 'Sad', 'Glad'],
-        'lean-coffee': ['To Discuss', 'Discussing', 'Discussed'],
-        'liked-learned-lacked-longed': ['Liked', 'Learned', 'Lacked', 'Longed For'],
-        'four-ls': ['Liked', 'Learned', 'Lacked', 'Longed For'],
-        'keep-add-drop': ['Keep', 'Add', 'Drop'],
-        'plus-delta': ['Plus', 'Delta'],
-        'kalms': ['Keep', 'Add', 'Less', 'More'],
-        'stop-start-continue': ['Stop', 'Start', 'Continue'],
-        'sailboat': ['Winds', 'Anchors', 'Rocks', 'Island'],
-        'hot-air-balloon': ['Fuel', 'Weights', 'Sky', 'Ground'],
-        'starfish': ['Start', 'Stop', 'Continue', 'Do More', 'Do Less'],
-        'car-retrospective': ['Engine', 'Brakes', 'Road Ahead'],
-        'garden': ['Flowers', 'Weeds', 'Fertilizer'],
-        'space-mission': ['Launch', 'Orbit', 'Gravity', 'Stars'],
-        'pirate-ship': ['Sails', 'Storms', 'Treasure', 'Sharks'],
-        'mountain-climb': ['Peak', 'Base', 'Gear', 'Obstacles'],
-        'movie-set': ['Action', 'Cut', 'Script', 'Props'],
-        'weather-report': ['Sunny', 'Cloudy', 'Stormy', 'Forecast'],
-        'team-health': ['Energy', 'Trust', 'Clarity'],
-        'energy-levels': ['High', 'Low', 'Recharge'],
-        'trust-circle': ['Safe', 'Risky', 'Build'],
-        'communication-flow': ['Clear', 'Blocked', 'Improve'],
-        'collaboration-check': ['Synergy', 'Silos', 'Bridges'],
-        'roles-and-goals': ['Defined', 'Unclear', 'Align'],
-        'feedback-loop': ['Given', 'Received', 'Action'],
-        'team-vibe': ['Positive', 'Tense', 'Boost'],
-        'workload-balance': ['Light', 'Heavy', 'Adjust'],
-        'celebration': ['Wins', 'Challenges', 'Cheers'],
-        'superhero': ['Powers', 'Kryptonite', 'Mission'],
-        'time-machine': ['Past', 'Present', 'Future'],
-        'zoo': ['Lions', 'Snakes', 'Monkeys'],

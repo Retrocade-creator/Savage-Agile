@@ -8,11 +8,11 @@
 </head>
 <body>
   <header>
-    <h1 onclick="returnToMainMenu()" class="clickable">Savage Agile</h1>
+    <img src="text-1745606504558.png" alt="Savage Agile" class="clickable" onclick="returnToMainMenu()">
     <p>Agilist Tool Box</p>
     <div id="room-name-section">
       <span id="room-name">Default Room</span>
-      <button id="edit-room-name">Edit</button>
+      <button id="edit-room-name" onclick="toggleEditRoomName()">Edit</button>
       <div id="room-name-edit" style="display: none;">
         <input type="text" id="room-name-input" placeholder="Enter room name...">
         <button onclick="saveRoomName()">Save</button>

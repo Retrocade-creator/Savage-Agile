@@ -23,14 +23,16 @@ header {
   margin-bottom: 20px;
 }
 
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 10px;
+img.clickable {
+  max-width: 300px;
+  height: auto;
   cursor: pointer;
+  display: block;
+  margin: 0 auto;
 }
 
-h1.clickable:hover {
-  color: #007bff;
+img.clickable:hover {
+  opacity: 0.8;
 }
 
 h2 {
@@ -232,8 +234,8 @@ body.dark-mode footer {
 
 /* Media Queries for Mobile */
 @media (max-width: 600px) {
-  h1 {
-    font-size: 2em;
+  img.clickable {
+    max-width: 200px;
   }
 
   h2 {
