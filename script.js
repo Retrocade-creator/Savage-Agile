@@ -957,4 +957,67 @@ function addSong() {
             height: '112',
             width: '200',
             videoId: videoId,
-            player
+            playerVars: {
+                'autoplay': 0,
+                'controls': 1,
+                'modestbranding': 1,
+                'rel': 0,
+                'showinfo': 0
+            },
+            events: {
+                'onReady': (event) => {
+                    console.log(`YouTube player for ${videoId} is ready`);
+                },
+                'onError': (event) => {
+                    console.error(`YouTube player error for ${videoId}:`, event.data);
+                    alert('Error loading YouTube video. Please check the URL.');
+                }
+            }
+        });
+
+        input.value = '';
+        saveAppState();
+    } else {
+        alert('Please enter a song URL before adding.');
+    }
+}
+
+// Story Pointing Functions
+function startStoryPointing() {
+    console.log('startStoryPointing called');
+    document.getElementById('main-menu').style.display = 'none';
+    document.getElementById('story-pointing-section').style.display = 'block';
+}
+
+function saveStoryTitle() {
+    console.log('saveStoryTitle called');
+    const input = document.getElementById('story-title-input');
+    const display = document.getElementById('story-title-display');
+    const text = document.getElementById('story-title-text');
+    const storyTitleSection = document.getElementById('story-title-section');
+    const sizingMethodSection = document.getElementById('sizing-method-section');
+
+    if (!input || !display || !text || !storyTitleSection || !sizingMethodSection) {
+        console.error('Story pointing elements missing:', { input, display, text, storyTitleSection, sizingMethodSection });
+        alert('Error: Story pointing elements not found. Check console.');
+        return;
+    }
+
+    const storyTitle = input.value.trim();
+    if (storyTitle !== '') {
+        text.textContent = storyTitle;
+        display.style.display = 'block';
+        storyTitleSection.style.display = 'none';
+        sizingMethodSection.style.display = 'block';
+        saveAppState();
+    } else {
+        alert('Please enter a story title.');
+    }
+}
+
+function editStoryTitle() {
+    console.log('editStoryTitle called');
+    const input = document.getElementById('story-title-input');
+    const display = document.getElementById('story-title-display');
+    const storyTitleSection = document.getElementById('story-title-section');
+    const text = document.getElement
