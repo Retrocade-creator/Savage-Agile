@@ -7,7 +7,7 @@ let storyPointingVotes = [];
 
 function saveAppState() {
     const state = {
-        roomName: document.getElementById('room-name').textContent,
+        roomName: document.getElementById('room-name')?.textContent || 'Default Room',
         columns: [],
         leanCoffeeColumns: [],
         feedbackBoard: [],
@@ -96,7 +96,10 @@ function loadAppState() {
 
     const state = JSON.parse(savedState);
 
-    document.getElementById('room-name').textContent = state.roomName;
+    const roomNameElement = document.getElementById('room-name');
+    if (roomNameElement) {
+        roomNameElement.textContent = state.roomName;
+    }
 
     state.columns.forEach(column => {
         addColumn(column.name);
@@ -184,8 +187,8 @@ function loadAppState() {
         li.textContent = feedbackText;
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.onclick = () => {
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.onclick = () => {
             li.remove();
             saveAppState();
         };
@@ -273,7 +276,6 @@ function loadAppState() {
                     console.log(`YouTube player for ${song.videoId} is ready`);
                 },
                 'onError': (event) => {
-                    console.error(`YouTube player error for ${song.videoId}:`, event.data);
                     alert('Error loading YouTube video. Please check the URL.');
                 }
             }
@@ -1501,6 +1503,50 @@ function prepopulateLeanCoffeeColumns() {
     resetTokens();
 }
 
+function saveLeanCoffeeToPDF() {
+    const element = document.createElement('div');
+    element.style.padding = '20px';
+    element.style.fontFamily = 'Arial, sans-serif';
+
+    const title = document.createElement('h1');
+    title.textContent = 'Lean Coffee';
+    title.style.textAlign = 'center';
+    element.appendChild(title);
+
+    const columns = document.querySelectorAll('#lean-coffee-columns-container .column');
+    columns.forEach(column => {
+        const columnId = column.id;
+        const columnName = document.getElementById(`${columnId}-name`).textContent;
+        const feedbackItems = document.getElementById(`${columnId}-feedback-list`);
+
+        const sectionTitle = document.createElement('h2');
+        sectionTitle.textContent = columnName;
+        element.appendChild(sectionTitle);
+
+        if (feedbackItems && feedbackItems.children.length > 0) {
+            const ul = document.createElement('ul');
+            Array.from(feedbackItems.children).forEach(item => {
+                const li = document.createElement('li');
+                const text = item.childNodes[2].textContent.trim();
+                const votes = item.querySelector('.vote-count').textContent;
+                li.textContent = `${text} (Votes: ${votes})`;
+                ul.appendChild(li);
+            });
+            element.appendChild(ul);
+        }
+    });
+
+    const opt = {
+        margin: 1,
+        filename: 'Lean_Coffee.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().from(element).set(opt).save();
+}
+
 function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
     leanCoffeeColumnCount++;
     const container = document.getElementById('lean-coffee-columns-container');
@@ -1517,13 +1563,4 @@ function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
     column.setAttribute('draggable', 'true');
 
     const normalizedName = name.toLowerCase();
-    if (normalizedName.includes('start') || normalizedName.includes('to discuss') || normalizedName.includes('liked') || normalizedName.includes('keep') || normalizedName.includes('plus') || normalizedName.includes('winds') || normalizedName.includes('fuel') || normalizedName.includes('energy') || normalizedName.includes('trust') || normalizedName.includes('wins')) column.classList.add('start');
-    else if (normalizedName.includes('stop') || normalizedName.includes('discussing') || normalizedName.includes('lacked') || normalizedName.includes('drop') || normalizedName.includes('delta') || normalizedName.includes('anchors') || normalizedName.includes('weights') || normalizedName.includes('risky') || normalizedName.includes('challenges')) column.classList.add('stop');
-    else if (normalizedName.includes('continue') || normalizedName.includes('discussed') || normalizedName.includes('learned') || normalizedName.includes('add') || normalizedName.includes('rocks') || normalizedName.includes('sky') || normalizedName.includes('build') || normalizedName.includes('cheers')) column.classList.add('continue');
-
-    const header = document.createElement('h3');
-    header.id = `${columnId}-name`;
-    header.textContent = name;
-    column.appendChild(header);
-
-    const editButton = document.createElement('
+    if (normalizedName.includes('start') || normalizedName.includes('to discuss') || normalizedName.includes('liked') || normalizedName.includes('keep') || normalizedName.includes('plus') || normalizedName.includes('winds') || normalizedName.includes('fuel') || normalized

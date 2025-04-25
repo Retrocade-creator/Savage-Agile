@@ -11,14 +11,6 @@
     <img src="text-1745606504558.png" alt="Savage Agile" class="clickable" onclick="returnToMainMenu()">
     <p>Agilist Tool Box</p>
     <button onclick="toggleTheme()">Toggle Dark Mode</button>
-    <div id="room-name-section">
-      <span id="room-name">Default Room</span>
-      <button id="edit-room-name" onclick="toggleEditRoomName()">Edit</button>
-      <div id="room-name-edit" style="display: none;">
-        <input type="text" id="room-name-input" placeholder="Enter room name...">
-        <button onclick="saveRoomName()">Save</button>
-      </div>
-    </div>
   </header>
 
   <div id="main-menu" class="container">
@@ -87,6 +79,14 @@
 
   <div id="retro-sections" class="container" style="display: none;">
     <h2>Retrospectives</h2>
+    <div id="room-name-section">
+      <span id="room-name">Default Room</span>
+      <button id="edit-room-name" onclick="toggleEditRoomName()">Edit</button>
+      <div id="room-name-edit" style="display: none;">
+        <input type="text" id="room-name-input" placeholder="Enter room name...">
+        <button onclick="saveRoomName()">Save</button>
+      </div>
+    </div>
     <select id="retro-presets" onchange="prepopulateRetroColumns()">
       <option value="">Select a preset...</option>
       <option value="start-stop-continue">Start, Stop, Continue</option>
