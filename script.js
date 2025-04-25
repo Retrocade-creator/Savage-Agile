@@ -1563,4 +1563,68 @@ function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
     column.setAttribute('draggable', 'true');
 
     const normalizedName = name.toLowerCase();
-    if (normalizedName.includes('start') || normalizedName.includes('to discuss') || normalizedName.includes('liked') || normalizedName.includes('keep') || normalizedName.includes('plus') || normalizedName.includes('winds') || normalizedName.includes('fuel') || normalized
+    if (normalizedName.includes('start') || normalizedName.includes('to discuss') || normalizedName.includes('liked') || normalizedName.includes('keep') || normalizedName.includes('plus') || normalizedName.includes('winds') || normalizedName.includes('fuel') || normalizedName.includes('energy') || normalizedName.includes('trust') || normalizedName.includes('wins')) column.classList.add('start');
+    else if (normalizedName.includes('stop') || normalizedName.includes('discussing') || normalizedName.includes('lacked') || normalizedName.includes('drop') || normalizedName.includes('delta') || normalizedName.includes('anchors') || normalizedName.includes('weights') || normalizedName.includes('risky') || normalizedName.includes('challenges')) column.classList.add('stop');
+    else if (normalizedName.includes('continue') || normalizedName.includes('discussed') || normalizedName.includes('learned') || normalizedName.includes('add') || normalizedName.includes('rocks') || normalizedName.includes('sky') || normalizedName.includes('build') || normalizedName.includes('cheers')) column.classList.add('continue');
+
+    const header = document.createElement('h3');
+    header.id = `${columnId}-name`;
+    header.textContent = name;
+    column.appendChild(header);
+
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.className = 'edit';
+    editButton.onclick = () => toggleEditColumnName(columnId);
+    column.appendChild(editButton);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.className = 'delete';
+    deleteButton.onclick = () => {
+        if (confirm('Are you sure you want to delete this column and all its feedback?')) {
+            column.remove();
+            saveAppState();
+        }
+    };
+    column.appendChild(deleteButton);
+
+    const editSection = document.createElement('div');
+    editSection.className = 'column-edit';
+    editSection.id = `${columnId}-edit`;
+    const editInput = document.createElement('input');
+    editInput.type = 'text';
+    editInput.id = `${columnId}-input`;
+    editInput.placeholder = 'Enter column name...';
+    const saveButton = document.createElement('button');
+    saveButton.textContent = 'Save';
+    saveButton.onclick = () => saveColumnName(columnId);
+    editSection.appendChild(editInput);
+    editSection.appendChild(saveButton);
+    column.appendChild(editSection);
+
+    const feedbackInput = document.createElement('input');
+    feedbackInput.type = 'text';
+    feedbackInput.className = 'column-feedback-input';
+    feedbackInput.id = `${columnId}-feedback-input`;
+    feedbackInput.placeholder = 'Add feedback...';
+    column.appendChild(feedbackInput);
+
+    const feedbackButton = document.createElement('button');
+    feedbackButton.textContent = 'Add';
+    feedbackButton.onclick = () => addColumnFeedback(columnId);
+    column.appendChild(feedbackButton);
+
+    const feedbackList = document.createElement('ul');
+    feedbackList.className = 'column-feedback-list';
+    feedbackList.id = `${columnId}-feedback-list`;
+    column.appendChild(feedbackList);
+
+    container.appendChild(column);
+    saveAppState();
+}
+
+function returnToMainMenuFromLeanCoffee() {
+    document.getElementById('lean-coffee-section').style.display = 'none';
+    document.getElementById('main-menu').style.display = 'block';
+}
