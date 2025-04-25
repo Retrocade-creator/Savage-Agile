@@ -966,7 +966,7 @@ function addColumn(name = `New Column ${columnCount + 1}`) {
     }
 
     const column = document.createElement('div');
-    column.className = 'column';
+    column.className = 'column hoverable-column';
     column.id = columnId;
     column.setAttribute('draggable', 'true');
 
@@ -980,11 +980,14 @@ function addColumn(name = `New Column ${columnCount + 1}`) {
     header.textContent = name;
     column.appendChild(header);
 
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+
     const editButton = document.createElement('button');
     editButton.textContent = 'Edit';
     editButton.className = 'edit';
     editButton.onclick = () => toggleEditColumnName(columnId);
-    column.appendChild(editButton);
+    buttonContainer.appendChild(editButton);
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete';
@@ -995,7 +998,9 @@ function addColumn(name = `New Column ${columnCount + 1}`) {
             saveAppState();
         }
     };
-    column.appendChild(deleteButton);
+    buttonContainer.appendChild(deleteButton);
+
+    column.appendChild(buttonContainer);
 
     const editSection = document.createElement('div');
     editSection.className = 'column-edit';
@@ -1558,7 +1563,7 @@ function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
     }
 
     const column = document.createElement('div');
-    column.className = 'column';
+    column.className = 'column hoverable-column';
     column.id = columnId;
     column.setAttribute('draggable', 'true');
 
@@ -1572,11 +1577,14 @@ function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
     header.textContent = name;
     column.appendChild(header);
 
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+
     const editButton = document.createElement('button');
     editButton.textContent = 'Edit';
     editButton.className = 'edit';
     editButton.onclick = () => toggleEditColumnName(columnId);
-    column.appendChild(editButton);
+    buttonContainer.appendChild(editButton);
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete';
@@ -1587,7 +1595,9 @@ function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
             saveAppState();
         }
     };
-    column.appendChild(deleteButton);
+    buttonContainer.appendChild(deleteButton);
+
+    column.appendChild(buttonContainer);
 
     const editSection = document.createElement('div');
     editSection.className = 'column-edit';
