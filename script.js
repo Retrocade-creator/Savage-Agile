@@ -188,7 +188,7 @@ function loadAppState() {
         li.textContent = feedbackText;
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
-        deleteBtn.className = 'delete-btn';
+            deleteBtn.className = 'delete-btn';
             deleteBtn.onclick = () => {
             li.remove();
             saveAppState();
@@ -1419,3 +1419,178 @@ function resetStoryPointing() {
     const votingSection = document.getElementById('voting-section');
     const voteOptions = document.getElementById('vote-options');
     const resultsList = document.getElementById('vote-results-list');
+    const summary = document.getElementById('vote-summary');
+
+    if (!storyTitleSection || !storyTitleDisplay || !storyTitleInput || !sizingMethodSection || !sizingMethod || !votingSection || !voteOptions || !resultsList || !summary) {
+        console.error('Story pointing reset elements missing:', { storyTitleSection, storyTitleDisplay, storyTitleInput, sizingMethodSection, sizingMethod, votingSection, voteOptions, resultsList, summary });
+        return;
+    }
+
+    storyTitleSection.style.display = 'block';
+    storyTitleDisplay.style.display = 'none';
+    storyTitleInput.value = '';
+    sizingMethodSection.style.display = 'none';
+    sizingMethod.value = '';
+    votingSection.style.display = 'none';
+    voteOptions.innerHTML = '<option value="">Select a size...</option>';
+    storyPointingVotes = [];
+    resultsList.innerHTML = '';
+    summary.textContent = 'No votes yet.';
+    saveAppState();
+}
+
+function returnToMainMenuFromStoryPointing() {
+    console.log('returnToMainMenuFromStoryPointing called');
+    document.getElementById('story-pointing-section').style.display = 'none';
+    document.getElementById('main-menu').style.display = 'block';
+}
+
+function startLeanCoffee() {
+    console.log('startLeanCoffee called');
+    document.getElementById('main-menu').style.display = 'none';
+    document.getElementById('lean-coffee-section').style.display = 'block';
+    resetTokens();
+}
+
+function prepopulateLeanCoffeeColumns() {
+    console.log('prepopulateLeanCoffeeColumns called');
+    const preset = document.getElementById('lean-coffee-presets').value;
+    const customForm = document.getElementById('lean-coffee-custom-columns-form');
+
+    if (!preset || !customForm) {
+        console.error('Preset or custom form missing:', { preset, customForm });
+        alert('Error: Preset or custom form not found. Check console.');
+        return;
+    }
+
+    customForm.style.display = preset === 'custom' ? 'flex' : 'none';
+
+    if (preset === 'custom') return;
+
+    if (!preset) return;
+
+    const container = document.getElementById('lean-coffee-columns-container');
+    if (!container) {
+        console.error('Lean Coffee columns container not found');
+        return;
+    }
+
+    if (container.children.length > 0) {
+        if (!confirm('This will clear existing columns. Continue?')) {
+            document.getElementById('lean-coffee-presets').value = '';
+            return;
+        }
+        container.innerHTML = '';
+        leanCoffeeColumnCount = 0;
+    }
+
+    const presets = {
+        'start-stop-continue': ['Start', 'Stop', 'Continue'],
+        'well-didnt-improve': ['What Went Well', 'What Didn\'t', 'What to Improve'],
+        'mad-sad-glad': ['Mad', 'Sad', 'Glad'],
+        'lean-coffee': ['To Discuss', 'Discussing', 'Discussed'],
+        'liked-learned-lacked-longed': ['Liked', 'Learned', 'Lacked', 'Longed For'],
+        'four-ls': ['Liked', 'Learned', 'Lacked', 'Longed For'],
+        'keep-add-drop': ['Keep', 'Add', 'Drop'],
+        'plus-delta': ['Plus', 'Delta'],
+        'kalms': ['Keep', 'Add', 'Less', 'More'],
+        'stop-start-continue': ['Stop', 'Start', 'Continue'],
+        'sailboat': ['Winds', 'Anchors', 'Rocks', 'Island'],
+        'hot-air-balloon': ['Fuel', 'Weights', 'Sky', 'Ground'],
+        'starfish': ['Start', 'Stop', 'Continue', 'Do More', 'Do Less'],
+        'car-retrospective': ['Engine', 'Brakes', 'Road Ahead'],
+        'garden': ['Flowers', 'Weeds', 'Fertilizer'],
+        'space-mission': ['Launch', 'Orbit', 'Gravity', 'Stars'],
+        'pirate-ship': ['Sails', 'Storms', 'Treasure', 'Sharks'],
+        'mountain-climb': ['Peak', 'Base', 'Gear', 'Obstacles'],
+        'movie-set': ['Action', 'Cut', 'Script', 'Props'],
+        'weather-report': ['Sunny', 'Cloudy', 'Stormy', 'Forecast'],
+        'team-health': ['Energy', 'Trust', 'Clarity'],
+        'energy-levels': ['High', 'Low', 'Recharge'],
+        'trust-circle': ['Safe', 'Risky', 'Build'],
+        'communication-flow': ['Clear', 'Blocked', 'Improve'],
+        'collaboration-check': ['Synergy', 'Silos', 'Bridges'],
+        'roles-and-goals': ['Defined', 'Unclear', 'Align'],
+        'feedback-loop': ['Given', 'Received', 'Action'],
+        'team-vibe': ['Positive', 'Tense', 'Boost'],
+        'workload-balance': ['Light', 'Heavy', 'Adjust'],
+        'celebration': ['Wins', 'Challenges', 'Cheers'],
+        'superhero': ['Powers', 'Kryptonite', 'Mission'],
+        'time-machine': ['Past', 'Present', 'Future'],
+        'zoo': ['Lions', 'Snakes', 'Monkeys'],
+        'circus': ['Acts', 'Clowns', 'Audience'],
+        'music-festival': ['Headliners', 'Backstage', 'Crowd'],
+        'art-gallery': ['Masterpieces', 'Sketches', 'Frames'],
+        'cooking-show': ['Ingredients', 'Recipe', 'Taste'],
+        'olympics': ['Gold', 'Silver', 'Bronze'],
+        'space-exploration': ['Stars', 'Black Holes', 'Planets'],
+        'road-trip': ['Destination', 'Detours', 'Fuel'],
+        'treasure-hunt': ['Map', 'Clues', 'Treasure'],
+        'game-show': ['Wins', 'Challenges', 'Prizes'],
+        'fashion-show': ['Runway', 'Designs', 'Audience'],
+        'magic-show': ['Tricks', 'Illusions', 'Reveal'],
+        'science-experiment': ['Hypothesis', 'Results', 'Conclusions'],
+        'detective-case': ['Clues', 'Suspects', 'Solve'],
+        'campfire': ['Stories', 'Sparks', 'Warmth'],
+        'world-tour': ['Stops', 'Highlights', 'Memories'],
+        'puzzle': ['Pieces', 'Fit', 'Missing']
+    };
+
+    presets[preset].forEach(name => addLeanCoffeeColumn(name));
+    document.getElementById('lean-coffee-presets').value = '';
+    resetTokens();
+}
+
+function createLeanCoffeeCustomColumns() {
+    console.log('createLeanCoffeeCustomColumns called');
+    const container = document.getElementById('lean-coffee-columns-container');
+    const column1 = document.getElementById('lean-coffee-custom-column-1').value.trim();
+    const column2 = document.getElementById('lean-coffee-custom-column-2').value.trim();
+    const column3 = document.getElementById('lean-coffee-custom-column-3').value.trim();
+    const customColumns = [column1, column2, column3].filter(name => name !== '');
+
+    if (!container) {
+        console.error('Lean Coffee columns container not found');
+        return;
+    }
+
+    if (customColumns.length === 0) {
+        alert('Please enter at least one column name.');
+        return;
+    }
+
+    if (container.children.length > 0) {
+        if (!confirm('This will clear existing columns. Continue?')) {
+            return;
+        }
+        container.innerHTML = '';
+        leanCoffeeColumnCount = 0;
+    }
+
+    customColumns.forEach(name => addLeanCoffeeColumn(name));
+    document.getElementById('lean-coffee-custom-column-1').value = '';
+    document.getElementById('lean-coffee-custom-column-2').value = '';
+    document.getElementById('lean-coffee-custom-column-3').value = '';
+    document.getElementById('lean-coffee-custom-columns-form').style.display = 'none';
+    resetTokens();
+}
+
+function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
+    console.log('addLeanCoffeeColumn called', name);
+    leanCoffeeColumnCount++;
+    const container = document.getElementById('lean-coffee-columns-container');
+    const columnId = `lean-coffee-column-${leanCoffeeColumnCount}`;
+
+    if (!container) {
+        console.error('Lean Coffee columns container not found');
+        return;
+    }
+
+    const column = document.createElement('div');
+    column.className = 'column';
+    column.id = columnId;
+    column.setAttribute('draggable', 'true');
+
+    const normalizedName = name.toLowerCase();
+    if (normalizedName.includes('start') || normalizedName.includes('to discuss') || normalizedName.includes('liked') || normalizedName.includes('keep') || normalizedName.includes('plus') || normalizedName.includes('winds') || normalizedName.includes('fuel') || normalizedName.includes('energy') || normalizedName.includes('trust') || normalizedName.includes('wins')) column.classList.add('start');
+    else if (normalizedName.includes('stop') || normalizedName.includes('discussing') || normalizedName.includes('lacked') || normalizedName.includes('drop') || normalizedName.includes('delta') || normalizedName.includes('anchors') || normalizedName.includes('weights') || normalizedName.includes('risky') || normalizedName.includes('challenges')) column.classList.add('

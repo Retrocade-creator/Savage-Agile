@@ -24,7 +24,7 @@ header {
 }
 
 img.clickable {
-  max-width: 300px;
+  max-width: 600px; /* Doubled from 300px */
   height: auto;
   cursor: pointer;
   display: block;
@@ -235,7 +235,7 @@ body.dark-mode footer {
 /* Media Queries for Mobile */
 @media (max-width: 600px) {
   img.clickable {
-    max-width: 200px;
+    max-width: 400px; /* Doubled from 200px */
   }
 
   h2 {
