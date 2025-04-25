@@ -10,6 +10,7 @@
   <header>
     <img src="text-1745606504558.png" alt="Savage Agile" class="clickable" onclick="returnToMainMenu()">
     <p>Agilist Tool Box</p>
+    <button onclick="toggleTheme()">Toggle Dark Mode</button>
     <div id="room-name-section">
       <span id="room-name">Default Room</span>
       <button id="edit-room-name" onclick="toggleEditRoomName()">Edit</button>
@@ -26,7 +27,6 @@
     <button onclick="startRetrospective()">Retrospectives</button>
     <button onclick="startStoryPointing()">Story Pointing</button>
     <button onclick="startLeanCoffee()">Lean Coffee</button>
-    <button onclick="toggleTheme()">Toggle Dark Mode</button>
     <button onclick="clearData()">Clear Data</button>
   </div>
 
@@ -36,9 +36,12 @@
       <option value="">Select an icebreaker...</option>
       <option value="Two Truths and a Lie">Two Truths and a Lie</option>
       <option value="Desert Island">Desert Island</option>
+      <option value="Superpower">Superpower</option>
+      <option value="First Job">First Job</option>
+      <option value="Dream Vacation">Dream Vacation</option>
+      <option value="Hidden Talent">Hidden Talent</option>
     </select>
     <button onclick="displayIcebreaker()">Display</button>
-    <button onclick="skipIcebreaker()">Skip</button>
     <div id="icebreaker-display" style="display: none;">
       <p id="icebreaker-text"></p>
     </div>
@@ -51,6 +54,7 @@
     <button onclick="showTeamNorms()">Team Norms</button>
     <button onclick="showDefinitionOfReady()">Definition of Ready</button>
     <button onclick="showDefinitionOfDone()">Definition of Done</button>
+    <button onclick="saveWorkingAgreementToPDF()">Save to PDF</button>
     <button onclick="returnToMainMenuFromWorkingAgreements()">Return to Main</button>
   </div>
 
@@ -83,6 +87,57 @@
 
   <div id="retro-sections" class="container" style="display: none;">
     <h2>Retrospectives</h2>
+    <select id="retro-presets" onchange="prepopulateRetroColumns()">
+      <option value="">Select a preset...</option>
+      <option value="start-stop-continue">Start, Stop, Continue</option>
+      <option value="well-didnt-improve">What Went Well, What Didn't, What to Improve</option>
+      <option value="mad-sad-glad">Mad, Sad, Glad</option>
+      <option value="liked-learned-lacked-longed">Liked, Learned, Lacked, Longed For</option>
+      <option value="four-ls">Liked, Learned, Lacked, Longed For</option>
+      <option value="keep-add-drop">Keep, Add, Drop</option>
+      <option value="plus-delta">Plus, Delta</option>
+      <option value="kalms">Keep, Add, Less, More</option>
+      <option value="stop-start-continue">Stop, Start, Continue</option>
+      <option value="sailboat">Winds, Anchors, Rocks, Island</option>
+      <option value="hot-air-balloon">Fuel, Weights, Sky, Ground</option>
+      <option value="starfish">Start, Stop, Continue, Do More, Do Less</option>
+      <option value="car-retrospective">Engine, Brakes, Road Ahead</option>
+      <option value="garden">Flowers, Weeds, Fertilizer</option>
+      <option value="space-mission">Launch, Orbit, Gravity, Stars</option>
+      <option value="pirate-ship">Sails, Storms, Treasure, Sharks</option>
+      <option value="mountain-climb">Peak, Base, Gear, Obstacles</option>
+      <option value="movie-set">Action, Cut, Script, Props</option>
+      <option value="weather-report">Sunny, Cloudy, Stormy, Forecast</option>
+      <option value="team-health">Energy, Trust, Clarity</option>
+      <option value="energy-levels">High, Low, Recharge</option>
+      <option value="trust-circle">Safe, Risky, Build</option>
+      <option value="communication-flow">Clear, Blocked, Improve</option>
+      <option value="collaboration-check">Synergy, Silos, Bridges</option>
+      <option value="roles-and-goals">Defined, Unclear, Align</option>
+      <option value="feedback-loop">Given, Received, Action</option>
+      <option value="team-vibe">Positive, Tense, Boost</option>
+      <option value="workload-balance">Light, Heavy, Adjust</option>
+      <option value="celebration">Wins, Challenges, Cheers</option>
+      <option value="superhero">Powers, Kryptonite, Mission</option>
+      <option value="time-machine">Past, Present, Future</option>
+      <option value="zoo">Lions, Snakes, Monkeys</option>
+      <option value="circus">Acts, Clowns, Audience</option>
+      <option value="music-festival">Headliners, Backstage, Crowd</option>
+      <option value="art-gallery">Masterpieces, Sketches, Frames</option>
+      <option value="cooking-show">Ingredients, Recipe, Taste</option>
+      <option value="olympics">Gold, Silver, Bronze</option>
+      <option value="space-exploration">Stars, Black Holes, Planets</option>
+      <option value="road-trip">Destination, Detours, Fuel</option>
+      <option value="treasure-hunt">Map, Clues, Treasure</option>
+      <option value="game-show">Wins, Challenges, Prizes</option>
+      <option value="fashion-show">Runway, Designs, Audience</option>
+      <option value="magic-show">Tricks, Illusions, Reveal</option>
+      <option value="science-experiment">Hypothesis, Results, Conclusions</option>
+      <option value="detective-case">Clues, Suspects, Solve</option>
+      <option value="campfire">Stories, Sparks, Warmth</option>
+      <option value="world-tour">Stops, Highlights, Memories</option>
+      <option value="puzzle">Pieces, Fit, Missing</option>
+    </select>
     <div id="columns-container"></div>
     <button onclick="addColumn()">Add Column</button>
     <input type="text" id="feedback-input" placeholder="Add general feedback...">
@@ -101,20 +156,20 @@
 
   <div id="story-pointing-section" class="container" style="display: none;">
     <h2>Story Pointing</h2>
-    <div id="story-title-section">
+    <div id="sizing-method-section">
+      <select id="sizing-method" onchange="updateSizingOptions()">
+        <option value="">Select sizing method...</option>
+        <option value="fibonacci">Fibonacci</option>
+        <option value="tshirt">T-Shirt</option>
+      </select>
+    </div>
+    <div id="story-title-section" style="display: none;">
       <input type="text" id="story-title-input" placeholder="Enter story title...">
       <button onclick="saveStoryTitle()">Save</button>
     </div>
     <div id="story-title-display" style="display: none;">
       <h3 id="story-title-text"></h3>
       <button onclick="editStoryTitle()">Edit</button>
-    </div>
-    <div id="sizing-method-section" style="display: none;">
-      <select id="sizing-method" onchange="updateSizingOptions()">
-        <option value="">Select sizing method...</option>
-        <option value="fibonacci">Fibonacci</option>
-        <option value="tshirt">T-Shirt</option>
-      </select>
     </div>
     <div id="voting-section" style="display: none;">
       <select id="vote-options">
@@ -132,18 +187,11 @@
     <h2>Lean Coffee</h2>
     <select id="lean-coffee-presets" onchange="prepopulateLeanCoffeeColumns()">
       <option value="">Select a preset...</option>
-      <option value="lean-coffee">Lean Coffee</option>
-      <option value="start-stop-continue">Start, Stop, Continue</option>
-      <option value="custom">Custom</option>
+      <option value="lean-coffee">Lean Coffee (To Discuss, Discussing, Discussed)</option>
     </select>
-    <div id="lean-coffee-custom-columns-form" style="display: none;">
-      <input type="text" id="lean-coffee-custom-column-1" placeholder="Column 1">
-      <input type="text" id="lean-coffee-custom-column-2" placeholder="Column 2">
-      <input type="text" id="lean-coffee-custom-column-3" placeholder="Column 3">
-      <button onclick="createLeanCoffeeCustomColumns()">Create</button>
-    </div>
     <div id="lean-coffee-columns-container"></div>
     <button onclick="addLeanCoffeeColumn()">Add Column</button>
+    <button onclick="saveLeanCoffeeToPDF()">Save to PDF</button>
     <p>Tokens Remaining: <span id="tokens-remaining">3</span></p>
     <button onclick="resetTokens()">Reset Tokens</button>
     <button onclick="returnToMainMenuFromLeanCoffee()">Return to Main</button>
@@ -154,6 +202,7 @@
   </footer>
 
   <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

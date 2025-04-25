@@ -184,8 +184,8 @@ function loadAppState() {
         li.textContent = feedbackText;
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.onclick = () => {
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.onclick = () => {
             li.remove();
             saveAppState();
         };
@@ -323,15 +323,16 @@ function loadAppState() {
 
     if (state.storyPointing) {
         const { storyTitle, sizingMethod, votes } = state.storyPointing;
+        if (sizingMethod) {
+            document.getElementById('sizing-method').value = sizingMethod;
+            document.getElementById('sizing-method-section').style.display = 'block';
+            document.getElementById('story-title-section').style.display = 'block';
+            updateSizingOptions();
+        }
         if (storyTitle) {
             document.getElementById('story-title-text').textContent = storyTitle;
             document.getElementById('story-title-display').style.display = 'block';
             document.getElementById('story-title-section').style.display = 'none';
-            document.getElementById('sizing-method-section').style.display = 'block';
-        }
-        if (sizingMethod) {
-            document.getElementById('sizing-method').value = sizingMethod;
-            updateSizingOptions();
             document.getElementById('voting-section').style.display = 'block';
         }
         storyPointingVotes = votes || [];
@@ -552,6 +553,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (editButton) {
         editButton.addEventListener('click', toggleEditRoomName);
     }
+
+    document.getElementById('sizing-method-section').style.display = 'block';
 });
 
 function returnToMainMenu() {
@@ -592,11 +595,6 @@ function displayIcebreaker() {
 
     displayText.textContent = preset;
     displayDiv.style.display = 'block';
-}
-
-function skipIcebreaker() {
-    document.getElementById('icebreaker-section').style.display = 'none';
-    document.getElementById('main-menu').style.display = 'block';
 }
 
 function returnToMainMenuFromIcebreaker() {
@@ -780,30 +778,50 @@ function returnToWorkingAgreements() {
     saveAppState();
 }
 
-function saveAgreements() {
-    const workingAgreementsSection = document.getElementById('working-agreements-section');
-    const mainMenu = document.getElementById('main-menu');
+function saveWorkingAgreementToPDF() {
+    const element = document.createElement('div');
+    element.style.padding = '20px';
+    element.style.fontFamily = 'Arial, sans-serif';
 
-    if (!workingAgreementsSection || !mainMenu) {
-        alert('Error: Section elements not found.');
-        return;
-    }
+    const title = document.createElement('h1');
+    title.textContent = 'Working Agreement';
+    title.style.textAlign = 'center';
+    element.appendChild(title);
 
-    workingAgreementsSection.style.display = 'none';
-    mainMenu.style.display = 'block';
-}
+    const sections = [
+        { id: 'team-norms-list', name: 'Team Norms' },
+        { id: 'definition-ready-list', name: 'Definition of Ready' },
+        { id: 'definition-done-list', name: 'Definition of Done' }
+    ];
 
-function proceedToRetrospective() {
-    const workingAgreementsSection = document.getElementById('working-agreements-section');
-    const retroSections = document.getElementById('retro-sections');
+    sections.forEach(section => {
+        const list = document.getElementById(section.id);
+        if (list && list.children.length > 0) {
+            const sectionTitle = document.createElement('h2');
+            sectionTitle.textContent = section.name;
+            element.appendChild(sectionTitle);
 
-    if (!workingAgreementsSection || !retroSections) {
-        alert('Error: Section elements not found.');
-        return;
-    }
+            const ul = document.createElement('ul');
+            Array.from(list.children).forEach(item => {
+                const li = document.createElement('li');
+                const text = item.childNodes[2].textContent.trim();
+                const votes = item.querySelector('.vote-count').textContent;
+                li.textContent = `${text} (Votes: ${votes})`;
+                ul.appendChild(li);
+            });
+            element.appendChild(ul);
+        }
+    });
 
-    workingAgreementsSection.style.display = 'none';
-    retroSections.style.display = 'block';
+    const opt = {
+        margin: 1,
+        filename: 'Working_Agreement.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().from(element).set(opt).save();
 }
 
 function returnToMainMenuFromWorkingAgreements() {
@@ -814,6 +832,81 @@ function returnToMainMenuFromWorkingAgreements() {
 function startRetrospective() {
     document.getElementById('main-menu').style.display = 'none';
     document.getElementById('retro-sections').style.display = 'block';
+    resetTokens();
+}
+
+function prepopulateRetroColumns() {
+    const preset = document.getElementById('retro-presets').value;
+    if (!preset) return;
+
+    const container = document.getElementById('columns-container');
+    if (!container) {
+        alert('Error: Retro columns container not found.');
+        return;
+    }
+
+    if (container.children.length > 0) {
+        if (!confirm('This will clear existing columns. Continue?')) {
+            document.getElementById('retro-presets').value = '';
+            return;
+        }
+        container.innerHTML = '';
+        columnCount = 0;
+    }
+
+    const presets = {
+        'start-stop-continue': ['Start', 'Stop', 'Continue'],
+        'well-didnt-improve': ['What Went Well', 'What Didn\'t', 'What to Improve'],
+        'mad-sad-glad': ['Mad', 'Sad', 'Glad'],
+        'liked-learned-lacked-longed': ['Liked', 'Learned', 'Lacked', 'Longed For'],
+        'four-ls': ['Liked', 'Learned', 'Lacked', 'Longed For'],
+        'keep-add-drop': ['Keep', 'Add', 'Drop'],
+        'plus-delta': ['Plus', 'Delta'],
+        'kalms': ['Keep', 'Add', 'Less', 'More'],
+        'stop-start-continue': ['Stop', 'Start', 'Continue'],
+        'sailboat': ['Winds', 'Anchors', 'Rocks', 'Island'],
+        'hot-air-balloon': ['Fuel', 'Weights', 'Sky', 'Ground'],
+        'starfish': ['Start', 'Stop', 'Continue', 'Do More', 'Do Less'],
+        'car-retrospective': ['Engine', 'Brakes', 'Road Ahead'],
+        'garden': ['Flowers', 'Weeds', 'Fertilizer'],
+        'space-mission': ['Launch', 'Orbit', 'Gravity', 'Stars'],
+        'pirate-ship': ['Sails', 'Storms', 'Treasure', 'Sharks'],
+        'mountain-climb': ['Peak', 'Base', 'Gear', 'Obstacles'],
+        'movie-set': ['Action', 'Cut', 'Script', 'Props'],
+        'weather-report': ['Sunny', 'Cloudy', 'Stormy', 'Forecast'],
+        'team-health': ['Energy', 'Trust', 'Clarity'],
+        'energy-levels': ['High', 'Low', 'Recharge'],
+        'trust-circle': ['Safe', 'Risky', 'Build'],
+        'communication-flow': ['Clear', 'Blocked', 'Improve'],
+        'collaboration-check': ['Synergy', 'Silos', 'Bridges'],
+        'roles-and-goals': ['Defined', 'Unclear', 'Align'],
+        'feedback-loop': ['Given', 'Received', 'Action'],
+        'team-vibe': ['Positive', 'Tense', 'Boost'],
+        'workload-balance': ['Light', 'Heavy', 'Adjust'],
+        'celebration': ['Wins', 'Challenges', 'Cheers'],
+        'superhero': ['Powers', 'Kryptonite', 'Mission'],
+        'time-machine': ['Past', 'Present', 'Future'],
+        'zoo': ['Lions', 'Snakes', 'Monkeys'],
+        'circus': ['Acts', 'Clowns', 'Audience'],
+        'music-festival': ['Headliners', 'Backstage', 'Crowd'],
+        'art-gallery': ['Masterpieces', 'Sketches', 'Frames'],
+        'cooking-show': ['Ingredients', 'Recipe', 'Taste'],
+        'olympics': ['Gold', 'Silver', 'Bronze'],
+        'space-exploration': ['Stars', 'Black Holes', 'Planets'],
+        'road-trip': ['Destination', 'Detours', 'Fuel'],
+        'treasure-hunt': ['Map', 'Clues', 'Treasure'],
+        'game-show': ['Wins', 'Challenges', 'Prizes'],
+        'fashion-show': ['Runway', 'Designs', 'Audience'],
+        'magic-show': ['Tricks', 'Illusions', 'Reveal'],
+        'science-experiment': ['Hypothesis', 'Results', 'Conclusions'],
+        'detective-case': ['Clues', 'Suspects', 'Solve'],
+        'campfire': ['Stories', 'Sparks', 'Warmth'],
+        'world-tour': ['Stops', 'Highlights', 'Memories'],
+        'puzzle': ['Pieces', 'Fit', 'Missing']
+    };
+
+    presets[preset].forEach(name => addColumn(name));
+    document.getElementById('retro-presets').value = '';
     resetTokens();
 }
 
@@ -1224,9 +1317,9 @@ function saveStoryTitle() {
     const display = document.getElementById('story-title-display');
     const text = document.getElementById('story-title-text');
     const storyTitleSection = document.getElementById('story-title-section');
-    const sizingMethodSection = document.getElementById('sizing-method-section');
+    const votingSection = document.getElementById('voting-section');
 
-    if (!input || !display || !text || !storyTitleSection || !sizingMethodSection) {
+    if (!input || !display || !text || !storyTitleSection || !votingSection) {
         alert('Error: Story pointing elements not found.');
         return;
     }
@@ -1236,7 +1329,7 @@ function saveStoryTitle() {
         text.textContent = storyTitle;
         display.style.display = 'block';
         storyTitleSection.style.display = 'none';
-        sizingMethodSection.style.display = 'block';
+        votingSection.style.display = 'block';
         saveAppState();
     } else {
         alert('Please enter a story title.');
@@ -1262,9 +1355,9 @@ function editStoryTitle() {
 function updateSizingOptions() {
     const method = document.getElementById('sizing-method').value;
     const voteOptions = document.getElementById('vote-options');
-    const votingSection = document.getElementById('voting-section');
+    const storyTitleSection = document.getElementById('story-title-section');
 
-    if (!method || !voteOptions || !votingSection) {
+    if (!method || !voteOptions || !storyTitleSection) {
         alert('Error: Sizing method elements not found.');
         return;
     }
@@ -1289,7 +1382,7 @@ function updateSizingOptions() {
         });
     }
 
-    votingSection.style.display = 'block';
+    storyTitleSection.style.display = 'block';
     saveAppState();
 }
 
@@ -1359,7 +1452,7 @@ function resetStoryPointing() {
     storyTitleSection.style.display = 'block';
     storyTitleDisplay.style.display = 'none';
     storyTitleInput.value = '';
-    sizingMethodSection.style.display = 'none';
+    sizingMethodSection.style.display = 'block';
     sizingMethod.value = '';
     votingSection.style.display = 'none';
     voteOptions.innerHTML = '<option value="">Select a size...</option>';
@@ -1382,17 +1475,6 @@ function startLeanCoffee() {
 
 function prepopulateLeanCoffeeColumns() {
     const preset = document.getElementById('lean-coffee-presets').value;
-    const customForm = document.getElementById('lean-coffee-custom-columns-form');
-
-    if (!preset || !customForm) {
-        alert('Error: Preset or custom form not found.');
-        return;
-    }
-
-    customForm.style.display = preset === 'custom' ? 'flex' : 'none';
-
-    if (preset === 'custom') return;
-
     if (!preset) return;
 
     const container = document.getElementById('lean-coffee-columns-container');
@@ -1411,92 +1493,11 @@ function prepopulateLeanCoffeeColumns() {
     }
 
     const presets = {
-        'start-stop-continue': ['Start', 'Stop', 'Continue'],
-        'well-didnt-improve': ['What Went Well', 'What Didn\'t', 'What to Improve'],
-        'mad-sad-glad': ['Mad', 'Sad', 'Glad'],
-        'lean-coffee': ['To Discuss', 'Discussing', 'Discussed'],
-        'liked-learned-lacked-longed': ['Liked', 'Learned', 'Lacked', 'Longed For'],
-        'four-ls': ['Liked', 'Learned', 'Lacked', 'Longed For'],
-        'keep-add-drop': ['Keep', 'Add', 'Drop'],
-        'plus-delta': ['Plus', 'Delta'],
-        'kalms': ['Keep', 'Add', 'Less', 'More'],
-        'stop-start-continue': ['Stop', 'Start', 'Continue'],
-        'sailboat': ['Winds', 'Anchors', 'Rocks', 'Island'],
-        'hot-air-balloon': ['Fuel', 'Weights', 'Sky', 'Ground'],
-        'starfish': ['Start', 'Stop', 'Continue', 'Do More', 'Do Less'],
-        'car-retrospective': ['Engine', 'Brakes', 'Road Ahead'],
-        'garden': ['Flowers', 'Weeds', 'Fertilizer'],
-        'space-mission': ['Launch', 'Orbit', 'Gravity', 'Stars'],
-        'pirate-ship': ['Sails', 'Storms', 'Treasure', 'Sharks'],
-        'mountain-climb': ['Peak', 'Base', 'Gear', 'Obstacles'],
-        'movie-set': ['Action', 'Cut', 'Script', 'Props'],
-        'weather-report': ['Sunny', 'Cloudy', 'Stormy', 'Forecast'],
-        'team-health': ['Energy', 'Trust', 'Clarity'],
-        'energy-levels': ['High', 'Low', 'Recharge'],
-        'trust-circle': ['Safe', 'Risky', 'Build'],
-        'communication-flow': ['Clear', 'Blocked', 'Improve'],
-        'collaboration-check': ['Synergy', 'Silos', 'Bridges'],
-        'roles-and-goals': ['Defined', 'Unclear', 'Align'],
-        'feedback-loop': ['Given', 'Received', 'Action'],
-        'team-vibe': ['Positive', 'Tense', 'Boost'],
-        'workload-balance': ['Light', 'Heavy', 'Adjust'],
-        'celebration': ['Wins', 'Challenges', 'Cheers'],
-        'superhero': ['Powers', 'Kryptonite', 'Mission'],
-        'time-machine': ['Past', 'Present', 'Future'],
-        'zoo': ['Lions', 'Snakes', 'Monkeys'],
-        'circus': ['Acts', 'Clowns', 'Audience'],
-        'music-festival': ['Headliners', 'Backstage', 'Crowd'],
-        'art-gallery': ['Masterpieces', 'Sketches', 'Frames'],
-        'cooking-show': ['Ingredients', 'Recipe', 'Taste'],
-        'olympics': ['Gold', 'Silver', 'Bronze'],
-        'space-exploration': ['Stars', 'Black Holes', 'Planets'],
-        'road-trip': ['Destination', 'Detours', 'Fuel'],
-        'treasure-hunt': ['Map', 'Clues', 'Treasure'],
-        'game-show': ['Wins', 'Challenges', 'Prizes'],
-        'fashion-show': ['Runway', 'Designs', 'Audience'],
-        'magic-show': ['Tricks', 'Illusions', 'Reveal'],
-        'science-experiment': ['Hypothesis', 'Results', 'Conclusions'],
-        'detective-case': ['Clues', 'Suspects', 'Solve'],
-        'campfire': ['Stories', 'Sparks', 'Warmth'],
-        'world-tour': ['Stops', 'Highlights', 'Memories'],
-        'puzzle': ['Pieces', 'Fit', 'Missing']
+        'lean-coffee': ['To Discuss', 'Discussing', 'Discussed']
     };
 
     presets[preset].forEach(name => addLeanCoffeeColumn(name));
     document.getElementById('lean-coffee-presets').value = '';
-    resetTokens();
-}
-
-function createLeanCoffeeCustomColumns() {
-    const container = document.getElementById('lean-coffee-columns-container');
-    const column1 = document.getElementById('lean-coffee-custom-column-1').value.trim();
-    const column2 = document.getElementById('lean-coffee-custom-column-2').value.trim();
-    const column3 = document.getElementById('lean-coffee-custom-column-3').value.trim();
-    const customColumns = [column1, column2, column3].filter(name => name !== '');
-
-    if (!container) {
-        alert('Error: Lean Coffee columns container not found.');
-        return;
-    }
-
-    if (customColumns.length === 0) {
-        alert('Please enter at least one column name.');
-        return;
-    }
-
-    if (container.children.length > 0) {
-        if (!confirm('This will clear existing columns. Continue?')) {
-            return;
-        }
-        container.innerHTML = '';
-        leanCoffeeColumnCount = 0;
-    }
-
-    customColumns.forEach(name => addLeanCoffeeColumn(name));
-    document.getElementById('lean-coffee-custom-column-1').value = '';
-    document.getElementById('lean-coffee-custom-column-2').value = '';
-    document.getElementById('lean-coffee-custom-column-3').value = '';
-    document.getElementById('lean-coffee-custom-columns-form').style.display = 'none';
     resetTokens();
 }
 
@@ -1525,59 +1526,4 @@ function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
     header.textContent = name;
     column.appendChild(header);
 
-    const editButton = document.createElement('button');
-    editButton.textContent = 'Edit';
-    editButton.className = 'edit';
-    editButton.onclick = () => toggleEditColumnName(columnId);
-    column.appendChild(editButton);
-
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.className = 'delete';
-    deleteButton.onclick = () => {
-        if (confirm('Are you sure you want to delete this column and all its feedback?')) {
-            column.remove();
-            saveAppState();
-        }
-    };
-    column.appendChild(deleteButton);
-
-    const editSection = document.createElement('div');
-    editSection.className = 'column-edit';
-    editSection.id = `${columnId}-edit`;
-    const editInput = document.createElement('input');
-    editInput.type = 'text';
-    editInput.id = `${columnId}-input`;
-    editInput.placeholder = 'Enter column name...';
-    const saveButton = document.createElement('button');
-    saveButton.textContent = 'Save';
-    saveButton.onclick = () => saveColumnName(columnId);
-    editSection.appendChild(editInput);
-    editSection.appendChild(saveButton);
-    column.appendChild(editSection);
-
-    const feedbackInput = document.createElement('input');
-    feedbackInput.type = 'text';
-    feedbackInput.className = 'column-feedback-input';
-    feedbackInput.id = `${columnId}-feedback-input`;
-    feedbackInput.placeholder = 'Add feedback...';
-    column.appendChild(feedbackInput);
-
-    const feedbackButton = document.createElement('button');
-    feedbackButton.textContent = 'Add';
-    feedbackButton.onclick = () => addColumnFeedback(columnId);
-    column.appendChild(feedbackButton);
-
-    const feedbackList = document.createElement('ul');
-    feedbackList.className = 'column-feedback-list';
-    feedbackList.id = `${columnId}-feedback-list`;
-    column.appendChild(feedbackList);
-
-    container.appendChild(column);
-    saveAppState();
-}
-
-function returnToMainMenuFromLeanCoffee() {
-    document.getElementById('lean-coffee-section').style.display = 'none';
-    document.getElementById('main-menu').style.display = 'block';
-}
+    const editButton = document.createElement('
