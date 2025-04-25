@@ -1,5 +1,3 @@
-console.log('Script loading...');
-
 let columnCount = 0;
 let leanCoffeeColumnCount = 0;
 let tokensRemaining = 3;
@@ -8,7 +6,6 @@ let players = {};
 let storyPointingVotes = [];
 
 function saveAppState() {
-    console.log('Saving app state to localStorage');
     const state = {
         roomName: document.getElementById('room-name').textContent,
         columns: [],
@@ -94,7 +91,6 @@ function saveAppState() {
 }
 
 function loadAppState() {
-    console.log('Loading app state from localStorage');
     const savedState = localStorage.getItem('retrocadeState');
     if (!savedState) return;
 
@@ -188,8 +184,8 @@ function loadAppState() {
         li.textContent = feedbackText;
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.onclick = () => {
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.onclick = () => {
             li.remove();
             saveAppState();
         };
@@ -344,7 +340,6 @@ function loadAppState() {
 }
 
 function clearData() {
-    console.log('clearData called');
     if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
         localStorage.removeItem('retrocadeState');
         localStorage.removeItem('theme');
@@ -353,7 +348,6 @@ function clearData() {
 }
 
 function toggleTheme() {
-    console.log('toggleTheme called');
     const body = document.body;
     body.classList.toggle('dark-mode');
     const isDarkMode = body.classList.contains('dark-mode');
@@ -554,20 +548,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    console.log('DOM fully loaded');
-    console.log('Checking for room-name-section:', document.getElementById('room-name-section'));
     const editButton = document.getElementById('edit-room-name');
     if (editButton) {
-        console.log('Edit button found');
         editButton.addEventListener('click', toggleEditRoomName);
-    } else {
-        console.error('Edit button not found!');
-        alert('Error: Edit button not found. Check console.');
     }
 });
 
 function returnToMainMenu() {
-    console.log('returnToMainMenu called');
     const sections = [
         'main-menu',
         'icebreaker-section',
@@ -589,20 +576,17 @@ function returnToMainMenu() {
 }
 
 function startIcebreaker() {
-    console.log('startIcebreaker called');
     document.getElementById('main-menu').style.display = 'none';
     document.getElementById('icebreaker-section').style.display = 'block';
 }
 
 function displayIcebreaker() {
-    console.log('displayIcebreaker called');
     const preset = document.getElementById('icebreaker-presets').value;
     const displayDiv = document.getElementById('icebreaker-display');
     const displayText = document.getElementById('icebreaker-text');
 
     if (!preset || !displayDiv || !displayText) {
-        console.error('Icebreaker elements missing:', { preset, displayDiv, displayText });
-        alert('Error: Icebreaker elements not found. Check console.');
+        alert('Error: Icebreaker elements not found.');
         return;
     }
 
@@ -611,38 +595,32 @@ function displayIcebreaker() {
 }
 
 function skipIcebreaker() {
-    console.log('skipIcebreaker called');
     document.getElementById('icebreaker-section').style.display = 'none';
     document.getElementById('main-menu').style.display = 'block';
 }
 
 function returnToMainMenuFromIcebreaker() {
-    console.log('returnToMainMenuFromIcebreaker called');
     document.getElementById('icebreaker-section').style.display = 'none';
     document.getElementById('main-menu').style.display = 'block';
 }
 
 function startWorkingAgreements() {
-    console.log('startWorkingAgreements called');
     document.getElementById('main-menu').style.display = 'none';
     document.getElementById('working-agreements-section').style.display = 'block';
 }
 
 function showTeamNorms() {
-    console.log('showTeamNorms called');
     document.getElementById('working-agreements-section').style.display = 'none';
     document.getElementById('team-norms').style.display = 'block';
 }
 
 function addTeamNorm() {
-    console.log('addTeamNorm called');
     const input = document.getElementById('team-norms-input');
     const agreementList = document.getElementById('team-norms-list');
     const agreementText = input.value.trim();
 
     if (!input || !agreementList) {
-        console.error('Team Norms elements missing:', { input, agreementList });
-        alert('Error: Team Norms elements not found. Check console.');
+        alert('Error: Team Norms elements not found.');
         return;
     }
 
@@ -679,27 +657,23 @@ function addTeamNorm() {
 }
 
 function saveTeamNorms() {
-    console.log('saveTeamNorms called');
     document.getElementById('team-norms').style.display = 'none';
     document.getElementById('working-agreements-section').style.display = 'block';
     saveAppState();
 }
 
 function showDefinitionOfReady() {
-    console.log('showDefinitionOfReady called');
     document.getElementById('working-agreements-section').style.display = 'none';
     document.getElementById('definition-ready').style.display = 'block';
 }
 
 function addDefinitionOfReady() {
-    console.log('addDefinitionOfReady called');
     const input = document.getElementById('definition-ready-input');
     const agreementList = document.getElementById('definition-ready-list');
     const agreementText = input.value.trim();
 
     if (!input || !agreementList) {
-        console.error('Definition of Ready elements missing:', { input, agreementList });
-        alert('Error: Definition of Ready elements not found. Check console.');
+        alert('Error: Definition of Ready elements not found.');
         return;
     }
 
@@ -736,27 +710,23 @@ function addDefinitionOfReady() {
 }
 
 function saveDefinitionOfReady() {
-    console.log('saveDefinitionOfReady called');
     document.getElementById('definition-ready').style.display = 'none';
     document.getElementById('working-agreements-section').style.display = 'block';
     saveAppState();
 }
 
 function showDefinitionOfDone() {
-    console.log('showDefinitionOfDone called');
     document.getElementById('working-agreements-section').style.display = 'none';
     document.getElementById('definition-done').style.display = 'block';
 }
 
 function addDefinitionOfDone() {
-    console.log('addDefinitionOfDone called');
     const input = document.getElementById('definition-done-input');
     const agreementList = document.getElementById('definition-done-list');
     const agreementText = input.value.trim();
 
     if (!input || !agreementList) {
-        console.error('Definition of Done elements missing:', { input, agreementList });
-        alert('Error: Definition of Done elements not found. Check console.');
+        alert('Error: Definition of Done elements not found.');
         return;
     }
 
@@ -793,14 +763,12 @@ function addDefinitionOfDone() {
 }
 
 function saveDefinitionOfDone() {
-    console.log('saveDefinitionOfDone called');
     document.getElementById('definition-done').style.display = 'none';
     document.getElementById('working-agreements-section').style.display = 'block';
     saveAppState();
 }
 
 function returnToWorkingAgreements() {
-    console.log('returnToWorkingAgreements called');
     const sections = ['team-norms', 'definition-ready', 'definition-done'];
     sections.forEach(section => {
         const element = document.getElementById(section);
@@ -813,13 +781,11 @@ function returnToWorkingAgreements() {
 }
 
 function saveAgreements() {
-    console.log('saveAgreements called');
     const workingAgreementsSection = document.getElementById('working-agreements-section');
     const mainMenu = document.getElementById('main-menu');
 
     if (!workingAgreementsSection || !mainMenu) {
-        console.error('Section elements missing:', { workingAgreementsSection, mainMenu });
-        alert('Error: Section elements not found. Check console.');
+        alert('Error: Section elements not found.');
         return;
     }
 
@@ -828,13 +794,11 @@ function saveAgreements() {
 }
 
 function proceedToRetrospective() {
-    console.log('proceedToRetrospective called');
     const workingAgreementsSection = document.getElementById('working-agreements-section');
     const retroSections = document.getElementById('retro-sections');
 
     if (!workingAgreementsSection || !retroSections) {
-        console.error('Section elements missing:', { workingAgreementsSection, retroSections });
-        alert('Error: Section elements not found. Check console.');
+        alert('Error: Section elements not found.');
         return;
     }
 
@@ -843,34 +807,29 @@ function proceedToRetrospective() {
 }
 
 function returnToMainMenuFromWorkingAgreements() {
-    console.log('returnToMainMenuFromWorkingAgreements called');
     document.getElementById('working-agreements-section').style.display = 'none';
     document.getElementById('main-menu').style.display = 'block';
 }
 
 function startRetrospective() {
-    console.log('startRetrospective called');
     document.getElementById('main-menu').style.display = 'none';
     document.getElementById('retro-sections').style.display = 'block';
     resetTokens();
 }
 
 function returnToMainMenuFromRetro() {
-    console.log('returnToMainMenuFromRetro called');
     document.getElementById('retro-sections').style.display = 'none';
     document.getElementById('main-menu').style.display = 'block';
 }
 
 function toggleEditRoomName() {
-    console.log('toggleEditRoomName called');
     const editSection = document.getElementById('room-name-edit');
     const editButton = document.getElementById('edit-room-name');
     const roomNameInput = document.getElementById('room-name-input');
     const roomNameDisplay = document.getElementById('room-name');
 
     if (!editSection || !editButton || !roomNameInput || !roomNameDisplay) {
-        console.error('Room name elements missing:', { editSection, editButton, roomNameInput, roomNameDisplay });
-        alert('Error: Room name elements not found. Check console.');
+        alert('Error: Room name elements not found.');
         return;
     }
 
@@ -883,14 +842,12 @@ function toggleEditRoomName() {
 }
 
 function saveRoomName() {
-    console.log('saveRoomName called');
     const input = document.getElementById('room-name-input');
     const roomName = document.getElementById('room-name');
     const newName = input.value.trim();
 
     if (!input || !roomName) {
-        console.error('Room name elements missing:', { input, roomName });
-        alert('Error: Room name elements not found. Check console.');
+        alert('Error: Room name elements not found.');
         return;
     }
 
@@ -904,13 +861,12 @@ function saveRoomName() {
 }
 
 function addColumn(name = `New Column ${columnCount + 1}`) {
-    console.log('addColumn called', name);
     columnCount++;
     const container = document.getElementById('columns-container');
     const columnId = `column-${columnCount}`;
 
     if (!container) {
-        console.error('Columns container not found');
+        alert('Error: Columns container not found.');
         return;
     }
 
@@ -982,15 +938,13 @@ function addColumn(name = `New Column ${columnCount + 1}`) {
 }
 
 function toggleEditColumnName(columnId) {
-    console.log(`toggleEditColumnName called for ${columnId}`);
     const editSection = document.getElementById(`${columnId}-edit`);
     const editButton = document.querySelector(`#${columnId} button.edit`);
     const nameInput = document.getElementById(`${columnId}-input`);
     const nameDisplay = document.getElementById(`${columnId}-name`);
 
     if (!editSection || !editButton || !nameInput || !nameDisplay) {
-        console.error(`Column elements missing for ${columnId}:`, { editSection, editButton, nameInput, nameDisplay });
-        alert(`Error: Column elements not found for ${columnId}. Check console.`);
+        alert(`Error: Column elements not found for ${columnId}.`);
         return;
     }
 
@@ -1003,15 +957,13 @@ function toggleEditColumnName(columnId) {
 }
 
 function saveColumnName(columnId) {
-    console.log(`saveColumnName called for ${columnId}`);
     const input = document.getElementById(`${columnId}-input`);
     const nameDisplay = document.getElementById(`${columnId}-name`);
     const column = document.getElementById(columnId);
     const newName = input.value.trim();
 
     if (!input || !nameDisplay || !column) {
-        console.error('Column elements missing:', { input, nameDisplay, column });
-        alert('Error: Column elements not found. Check console.');
+        alert('Error: Column elements not found.');
         return;
     }
 
@@ -1030,14 +982,12 @@ function saveColumnName(columnId) {
 }
 
 function addColumnFeedback(columnId) {
-    console.log(`addColumnFeedback called for ${columnId}`);
     const input = document.getElementById(`${columnId}-feedback-input`);
     const feedbackList = document.getElementById(`${columnId}-feedback-list`);
     const feedbackText = input.value.trim();
 
     if (!input || !feedbackList) {
-        console.error('Feedback elements missing:', { input, feedbackList });
-        alert('Error: Feedback elements not found. Check console.');
+        alert('Error: Feedback elements not found.');
         return;
     }
 
@@ -1097,7 +1047,6 @@ function disableAllVoteButtons() {
 }
 
 function resetTokens() {
-    console.log('resetTokens called');
     tokensRemaining = maxTokens;
     updateTokenCounter();
     const voteCounts = document.querySelectorAll('.column-feedback-list .vote-count');
@@ -1112,14 +1061,12 @@ function resetTokens() {
 }
 
 function addFeedback() {
-    console.log('addFeedback called');
     const input = document.getElementById('feedback-input');
     const feedbackList = document.getElementById('feedback-list');
     const feedbackText = input.value.trim();
 
     if (!input || !feedbackList) {
-        console.error('Feedback elements missing:', { input, feedbackList });
-        alert('Error: Feedback elements not found. Check console.');
+        alert('Error: Feedback elements not found.');
         return;
     }
 
@@ -1143,14 +1090,12 @@ function addFeedback() {
 }
 
 function addActionItem() {
-    console.log('addActionItem called');
     const input = document.getElementById('action-input');
     const actionList = document.getElementById('action-list');
     const actionText = input.value.trim();
 
     if (!input || !actionList) {
-        console.error('Action elements missing:', { input, actionList });
-        alert('Error: Action elements not found. Check console.');
+        alert('Error: Action elements not found.');
         return;
     }
 
@@ -1187,14 +1132,12 @@ function extractYouTubeVideoId(url) {
 }
 
 function addSong() {
-    console.log('addSong called');
     const input = document.getElementById('song-input');
     const songList = document.getElementById('song-list');
     const songUrl = input.value.trim();
 
     if (!input || !songList) {
-        console.error('Song elements missing:', { input, songList });
-        alert('Error: Song elements not found. Check console.');
+        alert('Error: Song elements not found.');
         return;
     }
 
@@ -1259,7 +1202,6 @@ function addSong() {
                     console.log(`YouTube player for ${videoId} is ready`);
                 },
                 'onError': (event) => {
-                    console.error(`YouTube player error for ${videoId}:`, event.data);
                     alert('Error loading YouTube video. Please check the URL.');
                 }
             }
@@ -1273,13 +1215,11 @@ function addSong() {
 }
 
 function startStoryPointing() {
-    console.log('startStoryPointing called');
     document.getElementById('main-menu').style.display = 'none';
     document.getElementById('story-pointing-section').style.display = 'block';
 }
 
 function saveStoryTitle() {
-    console.log('saveStoryTitle called');
     const input = document.getElementById('story-title-input');
     const display = document.getElementById('story-title-display');
     const text = document.getElementById('story-title-text');
@@ -1287,8 +1227,7 @@ function saveStoryTitle() {
     const sizingMethodSection = document.getElementById('sizing-method-section');
 
     if (!input || !display || !text || !storyTitleSection || !sizingMethodSection) {
-        console.error('Story pointing elements missing:', { input, display, text, storyTitleSection, sizingMethodSection });
-        alert('Error: Story pointing elements not found. Check console.');
+        alert('Error: Story pointing elements not found.');
         return;
     }
 
@@ -1305,15 +1244,13 @@ function saveStoryTitle() {
 }
 
 function editStoryTitle() {
-    console.log('editStoryTitle called');
     const input = document.getElementById('story-title-input');
     const display = document.getElementById('story-title-display');
     const storyTitleSection = document.getElementById('story-title-section');
     const text = document.getElementById('story-title-text');
 
     if (!input || !display || !storyTitleSection || !text) {
-        console.error('Story pointing elements missing:', { input, display, storyTitleSection, text });
-        alert('Error: Story pointing elements not found. Check console.');
+        alert('Error: Story pointing elements not found.');
         return;
     }
 
@@ -1323,14 +1260,12 @@ function editStoryTitle() {
 }
 
 function updateSizingOptions() {
-    console.log('updateSizingOptions called');
     const method = document.getElementById('sizing-method').value;
     const voteOptions = document.getElementById('vote-options');
     const votingSection = document.getElementById('voting-section');
 
     if (!method || !voteOptions || !votingSection) {
-        console.error('Sizing method elements missing:', { method, voteOptions, votingSection });
-        alert('Error: Sizing method elements not found. Check console.');
+        alert('Error: Sizing method elements not found.');
         return;
     }
 
@@ -1359,7 +1294,6 @@ function updateSizingOptions() {
 }
 
 function submitVote() {
-    console.log('submitVote called');
     const voteOptions = document.getElementById('vote-options');
     const vote = voteOptions.value;
 
@@ -1374,12 +1308,10 @@ function submitVote() {
 }
 
 function displayVoteResults() {
-    console.log('displayVoteResults called');
     const resultsList = document.getElementById('vote-results-list');
     const summary = document.getElementById('vote-summary');
 
     if (!resultsList || !summary) {
-        console.error('Vote results elements missing:', { resultsList, summary });
         return;
     }
 
@@ -1410,7 +1342,6 @@ function displayVoteResults() {
 }
 
 function resetStoryPointing() {
-    console.log('resetStoryPointing called');
     const storyTitleSection = document.getElementById('story-title-section');
     const storyTitleDisplay = document.getElementById('story-title-display');
     const storyTitleInput = document.getElementById('story-title-input');
@@ -1422,7 +1353,6 @@ function resetStoryPointing() {
     const summary = document.getElementById('vote-summary');
 
     if (!storyTitleSection || !storyTitleDisplay || !storyTitleInput || !sizingMethodSection || !sizingMethod || !votingSection || !voteOptions || !resultsList || !summary) {
-        console.error('Story pointing reset elements missing:', { storyTitleSection, storyTitleDisplay, storyTitleInput, sizingMethodSection, sizingMethod, votingSection, voteOptions, resultsList, summary });
         return;
     }
 
@@ -1440,26 +1370,22 @@ function resetStoryPointing() {
 }
 
 function returnToMainMenuFromStoryPointing() {
-    console.log('returnToMainMenuFromStoryPointing called');
     document.getElementById('story-pointing-section').style.display = 'none';
     document.getElementById('main-menu').style.display = 'block';
 }
 
 function startLeanCoffee() {
-    console.log('startLeanCoffee called');
     document.getElementById('main-menu').style.display = 'none';
     document.getElementById('lean-coffee-section').style.display = 'block';
     resetTokens();
 }
 
 function prepopulateLeanCoffeeColumns() {
-    console.log('prepopulateLeanCoffeeColumns called');
     const preset = document.getElementById('lean-coffee-presets').value;
     const customForm = document.getElementById('lean-coffee-custom-columns-form');
 
     if (!preset || !customForm) {
-        console.error('Preset or custom form missing:', { preset, customForm });
-        alert('Error: Preset or custom form not found. Check console.');
+        alert('Error: Preset or custom form not found.');
         return;
     }
 
@@ -1471,7 +1397,7 @@ function prepopulateLeanCoffeeColumns() {
 
     const container = document.getElementById('lean-coffee-columns-container');
     if (!container) {
-        console.error('Lean Coffee columns container not found');
+        alert('Error: Lean Coffee columns container not found.');
         return;
     }
 
@@ -1542,7 +1468,6 @@ function prepopulateLeanCoffeeColumns() {
 }
 
 function createLeanCoffeeCustomColumns() {
-    console.log('createLeanCoffeeCustomColumns called');
     const container = document.getElementById('lean-coffee-columns-container');
     const column1 = document.getElementById('lean-coffee-custom-column-1').value.trim();
     const column2 = document.getElementById('lean-coffee-custom-column-2').value.trim();
@@ -1550,7 +1475,7 @@ function createLeanCoffeeCustomColumns() {
     const customColumns = [column1, column2, column3].filter(name => name !== '');
 
     if (!container) {
-        console.error('Lean Coffee columns container not found');
+        alert('Error: Lean Coffee columns container not found.');
         return;
     }
 
@@ -1576,13 +1501,12 @@ function createLeanCoffeeCustomColumns() {
 }
 
 function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
-    console.log('addLeanCoffeeColumn called', name);
     leanCoffeeColumnCount++;
     const container = document.getElementById('lean-coffee-columns-container');
     const columnId = `lean-coffee-column-${leanCoffeeColumnCount}`;
 
     if (!container) {
-        console.error('Lean Coffee columns container not found');
+        alert('Error: Lean Coffee columns container not found.');
         return;
     }
 
@@ -1593,4 +1517,67 @@ function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
 
     const normalizedName = name.toLowerCase();
     if (normalizedName.includes('start') || normalizedName.includes('to discuss') || normalizedName.includes('liked') || normalizedName.includes('keep') || normalizedName.includes('plus') || normalizedName.includes('winds') || normalizedName.includes('fuel') || normalizedName.includes('energy') || normalizedName.includes('trust') || normalizedName.includes('wins')) column.classList.add('start');
-    else if (normalizedName.includes('stop') || normalizedName.includes('discussing') || normalizedName.includes('lacked') || normalizedName.includes('drop') || normalizedName.includes('delta') || normalizedName.includes('anchors') || normalizedName.includes('weights') || normalizedName.includes('risky') || normalizedName.includes('challenges')) column.classList.add('
+    else if (normalizedName.includes('stop') || normalizedName.includes('discussing') || normalizedName.includes('lacked') || normalizedName.includes('drop') || normalizedName.includes('delta') || normalizedName.includes('anchors') || normalizedName.includes('weights') || normalizedName.includes('risky') || normalizedName.includes('challenges')) column.classList.add('stop');
+    else if (normalizedName.includes('continue') || normalizedName.includes('discussed') || normalizedName.includes('learned') || normalizedName.includes('add') || normalizedName.includes('rocks') || normalizedName.includes('sky') || normalizedName.includes('build') || normalizedName.includes('cheers')) column.classList.add('continue');
+
+    const header = document.createElement('h3');
+    header.id = `${columnId}-name`;
+    header.textContent = name;
+    column.appendChild(header);
+
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.className = 'edit';
+    editButton.onclick = () => toggleEditColumnName(columnId);
+    column.appendChild(editButton);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.className = 'delete';
+    deleteButton.onclick = () => {
+        if (confirm('Are you sure you want to delete this column and all its feedback?')) {
+            column.remove();
+            saveAppState();
+        }
+    };
+    column.appendChild(deleteButton);
+
+    const editSection = document.createElement('div');
+    editSection.className = 'column-edit';
+    editSection.id = `${columnId}-edit`;
+    const editInput = document.createElement('input');
+    editInput.type = 'text';
+    editInput.id = `${columnId}-input`;
+    editInput.placeholder = 'Enter column name...';
+    const saveButton = document.createElement('button');
+    saveButton.textContent = 'Save';
+    saveButton.onclick = () => saveColumnName(columnId);
+    editSection.appendChild(editInput);
+    editSection.appendChild(saveButton);
+    column.appendChild(editSection);
+
+    const feedbackInput = document.createElement('input');
+    feedbackInput.type = 'text';
+    feedbackInput.className = 'column-feedback-input';
+    feedbackInput.id = `${columnId}-feedback-input`;
+    feedbackInput.placeholder = 'Add feedback...';
+    column.appendChild(feedbackInput);
+
+    const feedbackButton = document.createElement('button');
+    feedbackButton.textContent = 'Add';
+    feedbackButton.onclick = () => addColumnFeedback(columnId);
+    column.appendChild(feedbackButton);
+
+    const feedbackList = document.createElement('ul');
+    feedbackList.className = 'column-feedback-list';
+    feedbackList.id = `${columnId}-feedback-list`;
+    column.appendChild(feedbackList);
+
+    container.appendChild(column);
+    saveAppState();
+}
+
+function returnToMainMenuFromLeanCoffee() {
+    document.getElementById('lean-coffee-section').style.display = 'none';
+    document.getElementById('main-menu').style.display = 'block';
+}
