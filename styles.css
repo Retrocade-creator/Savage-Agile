@@ -1,49 +1,264 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f0f0f0;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  body.dark-mode {
-    background-color: #333;
-    color: #fff;
-  }
-  
-  .container {
-    max-width: 600px;
-    margin: 0 auto;
-    text-align: center;
-  }
-  
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  background-color: #f4f4f4;
+  color: #333;
+  padding: 20px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+  background-color: #1a1a1a;
+  color: #f4f4f4;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+h1.clickable:hover {
+  color: #007bff;
+}
+
+h2 {
+  font-size: 1.8em;
+  margin-bottom: 15px;
+}
+
+h3 {
+  font-size: 1.4em;
+  margin: 10px 0;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style-type: disc;
+  margin: 20px 0;
+  padding-left: 40px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .container {
+  background-color: #2c2c2c;
+}
+
+button, select, input[type="text"], input[type="checkbox"] {
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  display: inline-block;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+body.dark-mode button {
+  background-color: #444;
+}
+
+body.dark-mode button:hover {
+  background-color: #666;
+}
+
+input[type="text"], select {
+  display: block;
+  width: 100%;
+  background-color: #f9f9f9;
+}
+
+body.dark-mode input[type="text"], body.dark-mode select {
+  background-color: #333;
+  color: #f4f4f4;
+  border-color: #555;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.column {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+  flex: 1;
+}
+
+body.dark-mode .column {
+  background-color: #333;
+  border-color: #555;
+}
+
+.column.start {
+  background-color: #d4edda;
+}
+
+.column.stop {
+  background-color: #f8d7da;
+}
+
+.column.continue {
+  background-color: #d1ecf1;
+}
+
+body.dark-mode .column.start {
+  background-color: #2e7d32;
+}
+
+body.dark-mode .column.stop {
+  background-color: #c62828;
+}
+
+body.dark-mode .column.continue {
+  background-color: #006064;
+}
+
+.column-feedback-list li {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.agreement-list li {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.vote-count {
+  font-weight: bold;
+  min-width: 30px;
+}
+
+.vote-token-btn, .upvote-btn, .delete-btn, .edit {
+  padding: 5px 10px;
+  margin-left: 10px;
+  font-size: 0.9em;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+body.dark-mode .delete-btn {
+  background-color: #b71c1c;
+}
+
+body.dark-mode .delete-btn:hover {
+  background-color: #d32f2f;
+}
+
+.edit {
+  background-color: #28a745;
+}
+
+.edit:hover {
+  background-color: #218838;
+}
+
+body.dark-mode .edit {
+  background-color: #1e7e34;
+}
+
+body.dark-mode .edit:hover {
+  background-color: #2e7d32;
+}
+
+#columns-container, #lean-coffee-columns-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+#lean-coffee-custom-columns-form {
+  display: flex;
+  gap: 10px;
+}
+
+.player-container {
+  margin-top: 10px;
+}
+
+footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+body.dark-mode footer {
+  color: #ccc;
+}
+
+/* Media Queries for Mobile */
+@media (max-width: 600px) {
   h1 {
     font-size: 2em;
-    margin-bottom: 20px;
   }
-  
-  button {
-    display: block;
-    width: 100%;
+
+  h2 {
+    font-size: 1.5em;
+  }
+
+  button, input[type="text"], select {
+    padding: 8px;
+    font-size: 0.9em;
+  }
+
+  .container {
     padding: 15px;
-    margin: 10px 0;
-    font-size: 1.2em;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
   }
-  
-  button:hover {
-    background-color: #0056b3;
+
+  .column {
+    flex: 100%;
+    margin: 5px 0;
   }
-  
-  body.dark-mode button {
-    background-color: #555;
+
+  #lean-coffee-custom-columns-form {
+    flex-direction: column;
   }
-  
-  body.dark-mode button:hover {
-    background-color: #777;
+
+  ul {
+    padding-left: 20px;
   }
+}

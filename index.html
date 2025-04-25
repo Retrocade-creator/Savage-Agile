@@ -7,54 +7,153 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <header>
+    <h1 onclick="returnToMainMenu()" class="clickable">Savage Agile</h1>
+    <p>Agilist Tool Box</p>
+    <div id="room-name-section">
+      <span id="room-name">Default Room</span>
+      <button id="edit-room-name">Edit</button>
+      <div id="room-name-edit" style="display: none;">
+        <input type="text" id="room-name-input" placeholder="Enter room name...">
+        <button onclick="saveRoomName()">Save</button>
+      </div>
+    </div>
+  </header>
+
   <div id="main-menu" class="container">
-    <h1>Savage Agile</h1>
-    <button onclick="showPage('icebreakers')">Icebreakers</button>
-    <button onclick="showPage('working-agreement')">Working Agreement</button>
-    <button onclick="showPage('retrospectives')">Retrospectives</button>
-    <button onclick="showPage('story-pointing')">Story Pointing</button>
-    <button onclick="showPage('lean-coffee')">Lean Coffee</button>
-    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    <button onclick="startIcebreaker()">Icebreakers</button>
+    <button onclick="startWorkingAgreements()">Working Agreement</button>
+    <button onclick="startRetrospective()">Retrospectives</button>
+    <button onclick="startStoryPointing()">Story Pointing</button>
+    <button onclick="startLeanCoffee()">Lean Coffee</button>
+    <button onclick="toggleTheme()">Toggle Dark Mode</button>
+    <button onclick="clearData()">Clear Data</button>
   </div>
 
-  <div id="working-agreement" class="container" style="display: none;">
-    <h1>Working Agreement</h1>
-    <button onclick="showPage('team-norms')">Team Norms</button>
-    <button onclick="showPage('definition-ready')">Definition of Ready</button>
-    <button onclick="showPage('definition-done')">Definition of Done</button>
-    <button onclick="showPage('main-menu')">Return to Main</button>
+  <div id="icebreaker-section" class="container" style="display: none;">
+    <h2>Icebreakers</h2>
+    <select id="icebreaker-presets">
+      <option value="">Select an icebreaker...</option>
+      <option value="Two Truths and a Lie">Two Truths and a Lie</option>
+      <option value="Desert Island">Desert Island</option>
+    </select>
+    <button onclick="displayIcebreaker()">Display</button>
+    <button onclick="skipIcebreaker()">Skip</button>
+    <div id="icebreaker-display" style="display: none;">
+      <p id="icebreaker-text"></p>
+    </div>
+    <button onclick="returnToMainMenuFromIcebreaker()">Return to Main</button>
   </div>
 
-  <!-- Placeholder sections for future implementation -->
-  <div id="icebreakers" class="container" style="display: none;">
-    <h1>Icebreakers</h1>
-    <button onclick="showPage('main-menu')">Return to Main</button>
+  <div id="working-agreements-section" class="container" style="display: none;">
+    <h2>Working Agreement</h2>
+    <p>Define how your team collaborates effectively.</p>
+    <button onclick="showTeamNorms()">Team Norms</button>
+    <button onclick="showDefinitionOfReady()">Definition of Ready</button>
+    <button onclick="showDefinitionOfDone()">Definition of Done</button>
+    <button onclick="returnToMainMenuFromWorkingAgreements()">Return to Main</button>
   </div>
-  <div id="retrospectives" class="container" style="display: none;">
-    <h1>Retrospectives</h1>
-    <button onclick="showPage('main-menu')">Return to Main</button>
-  </div>
-  <div id="story-pointing" class="container" style="display: none;">
-    <h1>Story Pointing</h1>
-    <button onclick="showPage('main-menu')">Return to Main</button>
-  </div>
-  <div id="lean-coffee" class="container" style="display: none;">
-    <h1>Lean Coffee</h1>
-    <button onclick="showPage('main-menu')">Return to Main</button>
-  </div>
+
   <div id="team-norms" class="container" style="display: none;">
-    <h1>Team Norms</h1>
-    <button onclick="showPage('working-agreement')">Back to Working Agreement</button>
-  </div>
-  <div id="definition-ready" class="container" style="display: none;">
-    <h1>Definition of Ready</h1>
-    <button onclick="showPage('working-agreement')">Back to Working Agreement</button>
-  </div>
-  <div id="definition-done" class="container" style="display: none;">
-    <h1>Definition of Done</h1>
-    <button onclick="showPage('working-agreement')">Back to Working Agreement</button>
+    <h2>Team Norms</h2>
+    <input type="text" id="team-norms-input" placeholder="Add team norm...">
+    <button onclick="addTeamNorm()">Add</button>
+    <ul id="team-norms-list" class="agreement-list team-norms"></ul>
+    <button onclick="saveTeamNorms()">Save and Return</button>
+    <button onclick="returnToWorkingAgreements()">Back to Working Agreement</button>
   </div>
 
+  <div id="definition-ready" class="container" style="display: none;">
+    <h2>Definition of Ready</h2>
+    <input type="text" id="definition-ready-input" placeholder="Add readiness criterion...">
+    <button onclick="addDefinitionOfReady()">Add</button>
+    <ul id="definition-ready-list" class="agreement-list definition-of-ready"></ul>
+    <button onclick="saveDefinitionOfReady()">Save and Return</button>
+    <button onclick="returnToWorkingAgreements()">Back to Working Agreement</button>
+  </div>
+
+  <div id="definition-done" class="container" style="display: none;">
+    <h2>Definition of Done</h2>
+    <input type="text" id="definition-done-input" placeholder="Add completion criterion...">
+    <button onclick="addDefinitionOfDone()">Add</button>
+    <ul id="definition-done-list" class="agreement-list definition-of-done"></ul>
+    <button onclick="saveDefinitionOfDone()">Save and Return</button>
+    <button onclick="returnToWorkingAgreements()">Back to Working Agreement</button>
+  </div>
+
+  <div id="retro-sections" class="container" style="display: none;">
+    <h2>Retrospectives</h2>
+    <div id="columns-container"></div>
+    <button onclick="addColumn()">Add Column</button>
+    <input type="text" id="feedback-input" placeholder="Add general feedback...">
+    <button onclick="addFeedback()">Add Feedback</button>
+    <ul id="feedback-list"></ul>
+    <input type="text" id="action-input" placeholder="Add action item...">
+    <button onclick="addActionItem()">Add Action Item</button>
+    <ul id="action-list"></ul>
+    <input type="text" id="song-input" placeholder="Add YouTube song URL...">
+    <button onclick="addSong()">Add Song</button>
+    <ul id="song-list"></ul>
+    <button onclick="resetTokens()">Reset Tokens</button>
+    <p>Tokens Remaining: <span id="tokens-remaining">3</span></p>
+    <button onclick="returnToMainMenuFromRetro()">Return to Main</button>
+  </div>
+
+  <div id="story-pointing-section" class="container" style="display: none;">
+    <h2>Story Pointing</h2>
+    <div id="story-title-section">
+      <input type="text" id="story-title-input" placeholder="Enter story title...">
+      <button onclick="saveStoryTitle()">Save</button>
+    </div>
+    <div id="story-title-display" style="display: none;">
+      <h3 id="story-title-text"></h3>
+      <button onclick="editStoryTitle()">Edit</button>
+    </div>
+    <div id="sizing-method-section" style="display: none;">
+      <select id="sizing-method" onchange="updateSizingOptions()">
+        <option value="">Select sizing method...</option>
+        <option value="fibonacci">Fibonacci</option>
+        <option value="tshirt">T-Shirt</option>
+      </select>
+    </div>
+    <div id="voting-section" style="display: none;">
+      <select id="vote-options">
+        <option value="">Select a size...</option>
+      </select>
+      <button onclick="submitVote()">Vote</button>
+    </div>
+    <ul id="vote-results-list"></ul>
+    <p id="vote-summary">No votes yet.</p>
+    <button onclick="resetStoryPointing()">Reset</button>
+    <button onclick="returnToMainMenuFromStoryPointing()">Return to Main</button>
+  </div>
+
+  <div id="lean-coffee-section" class="container" style="display: none;">
+    <h2>Lean Coffee</h2>
+    <select id="lean-coffee-presets" onchange="prepopulateLeanCoffeeColumns()">
+      <option value="">Select a preset...</option>
+      <option value="lean-coffee">Lean Coffee</option>
+      <option value="start-stop-continue">Start, Stop, Continue</option>
+      <option value="custom">Custom</option>
+    </select>
+    <div id="lean-coffee-custom-columns-form" style="display: none;">
+      <input type="text" id="lean-coffee-custom-column-1" placeholder="Column 1">
+      <input type="text" id="lean-coffee-custom-column-2" placeholder="Column 2">
+      <input type="text" id="lean-coffee-custom-column-3" placeholder="Column 3">
+      <button onclick="createLeanCoffeeCustomColumns()">Create</button>
+    </div>
+    <div id="lean-coffee-columns-container"></div>
+    <button onclick="addLeanCoffeeColumn()">Add Column</button>
+    <p>Tokens Remaining: <span id="tokens-remaining">3</span></p>
+    <button onclick="resetTokens()">Reset Tokens</button>
+    <button onclick="returnToMainMenuFromLeanCoffee()">Return to Main</button>
+  </div>
+
+  <footer>
+    <p>© 2025 Savage Agile. All rights reserved.</p>
+  </footer>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script src="script.js"></script>
 </body>
 </html>

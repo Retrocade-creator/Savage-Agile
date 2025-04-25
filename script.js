@@ -66,7 +66,7 @@ function saveAppState() {
         votes: parseInt(li.querySelector('.vote-count').textContent)
     }));
 
-    const teamNormsList = document.querySelector('#agreement-list.team-norms');
+    const teamNormsList = document.querySelector('#team-norms-list');
     if (teamNormsList) {
         state.agreements.teamNorms = Array.from(teamNormsList.children).map(li => ({
             text: li.childNodes[2].textContent.trim(),
@@ -74,7 +74,7 @@ function saveAppState() {
         }));
     }
 
-    const definitionOfReadyList = document.querySelector('#agreement-list.definition-of-ready');
+    const definitionOfReadyList = document.querySelector('#definition-ready-list');
     if (definitionOfReadyList) {
         state.agreements.definitionOfReady = Array.from(definitionOfReadyList.children).map(li => ({
             text: li.childNodes[2].textContent.trim(),
@@ -82,7 +82,7 @@ function saveAppState() {
         }));
     }
 
-    const definitionOfDoneList = document.querySelector('#agreement-list.definition-of-done');
+    const definitionOfDoneList = document.querySelector('#definition-done-list');
     if (definitionOfDoneList) {
         state.agreements.definitionOfDone = Array.from(definitionOfDoneList.children).map(li => ({
             text: li.childNodes[2].textContent.trim(),
@@ -293,7 +293,7 @@ function loadAppState() {
     if (state.agreements) {
         const presets = ['team-norms', 'definition-of-ready', 'definition-of-done'];
         presets.forEach(preset => {
-            const list = document.querySelector(`#agreement-list.${preset}`);
+            const list = document.querySelector(`#${preset}-list`);
             if (list && state.agreements[preset.replace(/-/g, '')]) {
                 state.agreements[preset.replace(/-/g, '')].forEach(item => {
                     const li = document.createElement('li');
@@ -331,8 +331,7 @@ function loadAppState() {
             document.getElementById('story-title-text').textContent = storyTitle;
             document.getElementById('story-title-display').style.display = 'block';
             document.getElementById('story-title-section').style.display = 'none';
-            document.getElementById(' Олег Абрамович, добрый день! Чем могу помочь?
-sizing-method-section').style.display = 'block';
+            document.getElementById('sizing-method-section').style.display = 'block';
         }
         if (sizingMethod) {
             document.getElementById('sizing-method').value = sizingMethod;
@@ -376,6 +375,9 @@ function returnToMainMenu() {
         'main-menu',
         'icebreaker-section',
         'working-agreements-section',
+        'team-norms',
+        'definition-ready',
+        'definition-done',
         'retro-sections',
         'story-pointing-section',
         'lean-coffee-section'
@@ -429,53 +431,188 @@ function startWorkingAgreements() {
     document.getElementById('working-agreements-section').style.display = 'block';
 }
 
-function displayAgreement() {
-    console.log('displayAgreement called');
-    const preset = document.getElementById('agreement-presets').value;
-    const displayDiv = document.getElementById('agreement-display');
-    const displayText = document.getElementById('agreement-text');
-    const agreementList = document.getElementById('agreement-list');
+function showTeamNorms() {
+    console.log('showTeamNorms called');
+    document.getElementById('working-agreements-section').style.display = 'none';
+    document.getElementById('team-norms').style.display = 'block';
+}
 
-    if (!preset || !displayDiv || !displayText || !agreementList) {
-        console.error('Agreement elements missing:', { preset, displayDiv, displayText, agreementList });
-        alert('Error: Agreement elements not found. Check console.');
+function addTeamNorm() {
+    console.log('addTeamNorm called');
+    const input = document.getElementById('team-norms-input');
+    const agreementList = document.getElementById('team-norms-list');
+    const agreementText = input.value.trim();
+
+    if (!input || !agreementList) {
+        console.error('Team Norms elements missing:', { input, agreementList });
+        alert('Error: Team Norms elements not found. Check console.');
         return;
     }
 
-    displayText.textContent = preset.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
-    agreementList.className = `agreement-list ${preset}`;
-    agreementList.innerHTML = '';
-    displayDiv.style.display = 'block';
-
-    const state = JSON.parse(localStorage.getItem('retrocadeState') || '{}');
-    if (state.agreements && state.agreements[preset.replace(/-/g, '')]) {
-        state.agreements[preset.replace(/-/g, '')].forEach(item => {
-            const li = document.createElement('li');
-            const voteCount = document.createElement('span');
-            voteCount.textContent = item.votes;
-            voteCount.style.marginRight = '10px';
-            voteCount.className = 'vote-count';
-            const upvoteBtn = document.createElement('button');
-            upvoteBtn.textContent = 'Upvote';
-            upvoteBtn.className = 'upvote-btn';
-            upvoteBtn.onclick = () => {
-                voteCount.textContent = parseInt(voteCount.textContent) + 1;
-                saveAppState();
-            };
-            li.appendChild(voteCount);
-            li.appendChild(upvoteBtn);
-            li.appendChild(document.createTextNode(` ${item.text}`));
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'Delete';
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.onclick = () => {
-                li.remove();
-                saveAppState();
-            };
-            li.appendChild(deleteBtn);
-            agreementList.appendChild(li);
-        });
+    if (agreementText !== '') {
+        const li = document.createElement('li');
+        const voteCount = document.createElement('span');
+        voteCount.textContent = '0';
+        voteCount.style.marginRight = '10px';
+        voteCount.className = 'vote-count';
+        const upvoteBtn = document.createElement('button');
+        upvoteBtn.textContent = 'Upvote';
+        upvoteBtn.className = 'upvote-btn';
+        upvoteBtn.onclick = () => {
+            voteCount.textContent = parseInt(voteCount.textContent) + 1;
+            saveAppState();
+        };
+        li.appendChild(voteCount);
+        li.appendChild(upvoteBtn);
+        li.appendChild(document.createTextNode(` ${agreementText}`));
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.onclick = () => {
+            li.remove();
+            saveAppState();
+        };
+        li.appendChild(deleteBtn);
+        agreementList.appendChild(li);
+        input.value = '';
+        saveAppState();
+    } else {
+        alert('Please enter a team norm before adding.');
     }
+}
+
+function saveTeamNorms() {
+    console.log('saveTeamNorms called');
+    document.getElementById('team-norms').style.display = 'none';
+    document.getElementById('working-agreements-section').style.display = 'block';
+    saveAppState();
+}
+
+function showDefinitionOfReady() {
+    console.log('showDefinitionOfReady called');
+    document.getElementById('working-agreements-section').style.display = 'none';
+    document.getElementById('definition-ready').style.display = 'block';
+}
+
+function addDefinitionOfReady() {
+    console.log('addDefinitionOfReady called');
+    const input = document.getElementById('definition-ready-input');
+    const agreementList = document.getElementById('definition-ready-list');
+    const agreementText = input.value.trim();
+
+    if (!input || !agreementList) {
+        console.error('Definition of Ready elements missing:', { input, agreementList });
+        alert('Error: Definition of Ready elements not found. Check console.');
+        return;
+    }
+
+    if (agreementText !== '') {
+        const li = document.createElement('li');
+        const voteCount = document.createElement('span');
+        voteCount.textContent = '0';
+        voteCount.style.marginRight = '10px';
+        voteCount.className = 'vote-count';
+        const upvoteBtn = document.createElement('button');
+        upvoteBtn.textContent = 'Upvote';
+        upvoteBtn.className = 'upvote-btn';
+        upvoteBtn.onclick = () => {
+            voteCount.textContent = parseInt(voteCount.textContent) + 1;
+            saveAppState();
+        };
+        li.appendChild(voteCount);
+        li.appendChild(upvoteBtn);
+        li.appendChild(document.createTextNode(` ${agreementText}`));
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.onclick = () => {
+            li.remove();
+            saveAppState();
+        };
+        li.appendChild(deleteBtn);
+        agreementList.appendChild(li);
+        input.value = '';
+        saveAppState();
+    } else {
+        alert('Please enter a readiness criterion before adding.');
+    }
+}
+
+function saveDefinitionOfReady() {
+    console.log('saveDefinitionOfReady called');
+    document.getElementById('definition-ready').style.display = 'none';
+    document.getElementById('working-agreements-section').style.display = 'block';
+    saveAppState();
+}
+
+function showDefinitionOfDone() {
+    console.log('showDefinitionOfDone called');
+    document.getElementById('working-agreements-section').style.display = 'none';
+    document.getElementById('definition-done').style.display = 'block';
+}
+
+function addDefinitionOfDone() {
+    console.log('addDefinitionOfDone called');
+    const input = document.getElementById('definition-done-input');
+    const agreementList = document.getElementById('definition-done-list');
+    const agreementText = input.value.trim();
+
+    if (!input || !agreementList) {
+        console.error('Definition of Done elements missing:', { input, agreementList });
+        alert('Error: Definition of Done elements not found. Check console.');
+        return;
+    }
+
+    if (agreementText !== '') {
+        const li = document.createElement('li');
+        const voteCount = document.createElement('span');
+        voteCount.textContent = '0';
+        voteCount.style.marginRight = '10px';
+        voteCount.className = 'vote-count';
+        const upvoteBtn = document.createElement('button');
+        upvoteBtn.textContent = 'Upvote';
+        upvoteBtn.className = 'upvote-btn';
+        upvoteBtn.onclick = () => {
+            voteCount.textContent = parseInt(voteCount.textContent) + 1;
+            saveAppState();
+        };
+        li.appendChild(voteCount);
+        li.appendChild(upvoteBtn);
+        li.appendChild(document.createTextNode(` ${agreementText}`));
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.onclick = () => {
+            li.remove();
+            saveAppState();
+        };
+        li.appendChild(deleteBtn);
+        agreementList.appendChild(li);
+        input.value = '';
+        saveAppState();
+    } else {
+        alert('Please enter a completion criterion before adding.');
+    }
+}
+
+function saveDefinitionOfDone() {
+    console.log('saveDefinitionOfDone called');
+    document.getElementById('definition-done').style.display = 'none';
+    document.getElementById('working-agreements-section').style.display = 'block';
+    saveAppState();
+}
+
+function returnToWorkingAgreements() {
+    console.log('returnToWorkingAgreements called');
+    const sections = ['team-norms', 'definition-ready', 'definition-done'];
+    sections.forEach(section => {
+        const element = document.getElementById(section);
+        if (element) {
+            element.style.display = 'none';
+        }
+    });
+    document.getElementById('working-agreements-section').style.display = 'block';
+    saveAppState();
 }
 
 function addAgreement() {
@@ -1229,446 +1366,3 @@ function prepopulateLeanCoffeeColumns() {
         'superhero': ['Powers', 'Kryptonite', 'Mission'],
         'time-machine': ['Past', 'Present', 'Future'],
         'zoo': ['Lions', 'Snakes', 'Monkeys'],
-        'circus': ['Acts', 'Clowns', 'Audience'],
-        'music-festival': ['Headliners', 'Backstage', 'Crowd'],
-        'art-gallery': ['Masterpieces', 'Sketches', 'Frames'],
-        'cooking-show': ['Ingredients', 'Recipe', 'Taste'],
-        'olympics': ['Gold', 'Silver', 'Bronze'],
-        'space-exploration': ['Stars', 'Black Holes', 'Planets'],
-        'road-trip': ['Destination', 'Detours', 'Fuel'],
-        'treasure-hunt': ['Map', 'Clues', 'Treasure'],
-        'game-show': ['Wins', 'Challenges', 'Prizes'],
-        'fashion-show': ['Runway', 'Designs', 'Audience'],
-        'magic-show': ['Tricks', 'Illusions', 'Reveal'],
-        'science-experiment': ['Hypothesis', 'Results', 'Conclusions'],
-        'detective-case': ['Clues', 'Suspects', 'Solve'],
-        'campfire': ['Stories', 'Sparks', 'Warmth'],
-        'world-tour': ['Stops', 'Highlights', 'Memories'],
-        'puzzle': ['Pieces', 'Fit', 'Missing']
-    };
-
-    presets[preset].forEach(name => addLeanCoffeeColumn(name));
-    document.getElementById('lean-coffee-presets').value = '';
-    resetTokens();
-}
-
-function createLeanCoffeeCustomColumns() {
-    console.log('createLeanCoffeeCustomColumns called');
-    const container = document.getElementById('lean-coffee-columns-container');
-    const column1 = document.getElementById('lean-coffee-custom-column-1').value.trim();
-    const column2 = document.getElementById('lean-coffee-custom-column-2').value.trim();
-    const column3 = document.getElementById('lean-coffee-custom-column-3').value.trim();
-    const customColumns = [column1, column2, column3].filter(name => name !== '');
-
-    if (!container) {
-        console.error('Lean Coffee columns container not found');
-        return;
-    }
-
-    if (customColumns.length === 0) {
-        alert('Please enter at least one column name.');
-        return;
-    }
-
-    if (container.children.length > 0) {
-        if (!confirm('This will clear existing columns. Continue?')) {
-            return;
-        }
-        container.innerHTML = '';
-        leanCoffeeColumnCount = 0;
-    }
-
-    customColumns.forEach(name => addLeanCoffeeColumn(name));
-    document.getElementById('lean-coffee-custom-columns-form').style.display = 'none';
-    document.getElementById('lean-coffee-presets').value = '';
-    document.getElementById('lean-coffee-custom-column-1').value = '';
-    document.getElementById('lean-coffee-custom-column-2').value = '';
-    document.getElementById('lean-coffee-custom-column-3').value = '';
-    resetTokens();
-}
-
-function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
-    console.log('addLeanCoffeeColumn called', name);
-    leanCoffeeColumnCount++;
-    const container = document.getElementById('lean-coffee-columns-container');
-    const columnId = `lean-coffee-column-${leanCoffeeColumnCount}`;
-
-    if (!container) {
-        console.error('Lean Coffee columns container not found');
-        return;
-    }
-
-    const column = document.createElement('div');
-    column.className = 'column';
-    column.id = columnId;
-    column.setAttribute('draggable', 'true');
-
-    const normalizedName = name.toLowerCase();
-    if (normalizedName.includes('start') || normalizedName.includes('to discuss') || normalizedName.includes('liked') || normalizedName.includes('keep') || normalizedName.includes('plus') || normalizedName.includes('winds') || normalizedName.includes('fuel') || normalizedName.includes('energy') || normalizedName.includes('trust') || normalizedName.includes('wins')) column.classList.add('start');
-    else if (normalizedName.includes('stop') || normalizedName.includes('discussing') || normalizedName.includes('lacked') || normalizedName.includes('drop') || normalizedName.includes('delta') || normalizedName.includes('anchors') || normalizedName.includes('weights') || normalizedName.includes('risky') || normalizedName.includes('challenges')) column.classList.add('stop');
-    else if (normalizedName.includes('continue') || normalizedName.includes('discussed') || normalizedName.includes('learned') || normalizedName.includes('add') || normalizedName.includes('rocks') || normalizedName.includes('sky') || normalizedName.includes('build') || normalizedName.includes('cheers')) column.classList.add('continue');
-
-    const header = document.createElement('h3');
-    header.id = `${columnId}-name`;
-    header.textContent = name;
-    column.appendChild(header);
-
-    const editButton = document.createElement('button');
-    editButton.textContent = 'Edit';
-    editButton.className = 'edit';
-    editButton.onclick = () => toggleEditLeanCoffeeColumnName(columnId);
-    column.appendChild(editButton);
-
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.className = 'delete';
-    deleteButton.onclick = () => {
-        if (confirm('Are you sure you want to delete this column and all its feedback?')) {
-            column.remove();
-            saveAppState();
-        }
-    };
-    column.appendChild(deleteButton);
-
-    const editSection = document.createElement('div');
-    editSection.className = 'column-edit';
-    editSection.id = `${columnId}-edit`;
-    const editInput = document.createElement('input');
-    editInput.type = 'text';
-    editInput.id = `${columnId}-input`;
-    editInput.placeholder = 'Enter column name...';
-    const saveButton = document.createElement('button');
-    saveButton.textContent = 'Save';
-    saveButton.onclick = () => saveLeanCoffeeColumnName(columnId);
-    editSection.appendChild(editInput);
-    editSection.appendChild(saveButton);
-    column.appendChild(editSection);
-
-    const feedbackInput = document.createElement('input');
-    feedbackInput.type = 'text';
-    feedbackInput.className = 'column-feedback-input';
-    feedbackInput.id = `${columnId}-feedback-input`;
-    feedbackInput.placeholder = 'Add feedback...';
-    column.appendChild(feedbackInput);
-
-    const feedbackButton = document.createElement('button');
-    feedbackButton.textContent = 'Add';
-    feedbackButton.onclick = () => addLeanCoffeeColumnFeedback(columnId);
-    column.appendChild(feedbackButton);
-
-    const feedbackList = document.createElement('ul');
-    feedbackList.className = 'column-feedback-list';
-    feedbackList.id = `${columnId}-feedback-list`;
-    column.appendChild(feedbackList);
-
-    container.appendChild(column);
-    saveAppState();
-}
-
-function toggleEditLeanCoffeeColumnName(columnId) {
-    console.log(`toggleEditLeanCoffeeColumnName called for ${columnId}`);
-    const editSection = document.getElementById(`${columnId}-edit`);
-    const editButton = document.querySelector(`#${columnId} button.edit`);
-    const nameInput = document.getElementById(`${columnId}-input`);
-    const nameDisplay = document.getElementById(`${columnId}-name`);
-
-    if (!editSection || !editButton || !nameInput || !nameDisplay) {
-        console.error(`Lean Coffee column elements missing for ${columnId}:`, { editSection, editButton, nameInput, nameDisplay });
-        alert(`Error: Lean Coffee column elements not found for ${columnId}. Check console.`);
-        return;
-    }
-
-    const isEditVisible = editSection.style.display === 'block';
-    editSection.style.display = isEditVisible ? 'none' : 'block';
-    editButton.style.display = isEditVisible ? 'inline-block' : 'none';
-    if (!isEditVisible) {
-        nameInput.value = nameDisplay.textContent;
-    }
-}
-
-function saveLeanCoffeeColumnName(columnId) {
-    console.log(`saveLeanCoffeeColumnName called for ${columnId}`);
-    const input = document.getElementById(`${columnId}-input`);
-    const nameDisplay = document.getElementById(`${columnId}-name`);
-    const column = document.getElementById(columnId);
-    const newName = input.value.trim();
-
-    if (!input || !nameDisplay || !column) {
-        console.error('Lean Coffee column elements missing:', { input, nameDisplay, column });
-        alert('Error: Lean Coffee column elements not found. Check console.');
-        return;
-    }
-
-    if (newName !== '') {
-        nameDisplay.textContent = newName;
-        column.classList.remove('start', 'stop', 'continue');
-        const normalizedName = newName.toLowerCase();
-        if (normalizedName.includes('start') || normalizedName.includes('to discuss') || normalizedName.includes('liked') || normalizedName.includes('keep') || normalizedName.includes('plus') || normalizedName.includes('winds') || normalizedName.includes('fuel') || normalizedName.includes('energy') || normalizedName.includes('trust') || normalizedName.includes('wins')) column.classList.add('start');
-        else if (normalizedName.includes('stop') || normalizedName.includes('discussing') || normalizedName.includes('lacked') || normalizedName.includes('drop') || normalizedName.includes('delta') || normalizedName.includes('anchors') || normalizedName.includes('weights') || normalizedName.includes('risky') || normalizedName.includes('challenges')) column.classList.add('stop');
-        else if (normalizedName.includes('continue') || normalizedName.includes('discussed') || normalizedName.includes('learned') || normalizedName.includes('add') || normalizedName.includes('rocks') || normalizedName.includes('sky') || normalizedName.includes('build') || normalizedName.includes('cheers')) column.classList.add('continue');
-        toggleEditLeanCoffeeColumnName(columnId);
-        saveAppState();
-    } else {
-        alert('Please enter a column name.');
-    }
-}
-
-function addLeanCoffeeColumnFeedback(columnId) {
-    console.log(`addLeanCoffeeColumnFeedback called for ${columnId}`);
-    const input = document.getElementById(`${columnId}-feedback-input`);
-    const feedbackList = document.getElementById(`${columnId}-feedback-list`);
-    const feedbackText = input.value.trim();
-
-    if (!input || !feedbackList) {
-        console.error('Lean Coffee feedback elements missing:', { input, feedbackList });
-        alert('Error: Lean Coffee feedback elements not found. Check console.');
-        return;
-    }
-
-    if (feedbackText !== '') {
-        const li = document.createElement('li');
-        const voteCount = document.createElement('span');
-        voteCount.textContent = '0';
-        voteCount.style.marginRight = '10px';
-        voteCount.className = 'vote-count';
-        const voteTokenBtn = document.createElement('button');
-        voteTokenBtn.textContent = 'Vote';
-        voteTokenBtn.className = 'vote-token-btn';
-        voteTokenBtn.onclick = () => {
-            if (tokensRemaining > 0) {
-                voteCount.textContent = parseInt(voteCount.textContent) + 1;
-                tokensRemaining--;
-                updateTokenCounter();
-                if (tokensRemaining === 0) {
-                    disableAllVoteButtons();
-                }
-                saveAppState();
-            } else {
-                alert('You have used all your tokens!');
-            }
-        };
-        li.appendChild(voteCount);
-        li.appendChild(voteTokenBtn);
-        li.appendChild(document.createTextNode(` ${feedbackText}`));
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.onclick = () => {
-            li.remove();
-            saveAppState();
-        };
-        li.appendChild(deleteBtn);
-        feedbackList.appendChild(li);
-        input.value = '';
-        saveAppState();
-    } else {
-        alert('Please enter feedback before adding.');
-    }
-}
-
-function returnToMainMenuFromLeanCoffee() {
-    console.log('returnToMainMenuFromLeanCoffee called');
-    document.getElementById('lean-coffee-section').style.display = 'none';
-    document.getElementById('main-menu').style.display = 'block';
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('columns-container');
-    if (container) {
-        container.addEventListener('dragstart', (e) => {
-            const target = e.target.closest('.column');
-            if (target) {
-                target.classList.add('dragging');
-                e.dataTransfer.setData('text/plain', target.id);
-            }
-        });
-
-        container.addEventListener('dragend', (e) => {
-            const target = e.target.closest('.column');
-            if (target) {
-                target.classList.remove('dragging');
-            }
-        });
-
-        container.addEventListener('dragover', (e) => {
-            e.preventDefault();
-        });
-
-        container.addEventListener('drop', (e) => {
-            e.preventDefault();
-            const draggedId = e.dataTransfer.getData('text/plain');
-            const draggedElement = document.getElementById(draggedId);
-            const target = e.target.closest('.column');
-
-            if (draggedElement && target && draggedElement !== target) {
-                const allColumns = Array.from(container.children);
-                const draggedIndex = allColumns.indexOf(draggedElement);
-                const targetIndex = allColumns.indexOf(target);
-
-                if (draggedIndex < targetIndex) {
-                    container.insertBefore(draggedElement, target.nextSibling);
-                } else {
-                    container.insertBefore(draggedElement, target);
-                }
-                saveAppState();
-            }
-        });
-
-        let touchTarget = null;
-        let touchStartX = 0;
-        let touchStartY = 0;
-
-        container.addEventListener('touchstart', (e) => {
-            const target = e.target.closest('.column');
-            if (target) {
-                touchTarget = target;
-                touchTarget.classList.add('dragging');
-                const touch = e.touches[0];
-                touchStartX = touch.clientX;
-                touchStartY = touch.clientY;
-                e.preventDefault();
-            }
-        });
-
-        container.addEventListener('touchmove', (e) => {
-            if (touchTarget) {
-                const touch = e.touches[0];
-                const deltaX = touch.clientX - touchStartX;
-                const deltaY = touch.clientY - touchStartY;
-                touchTarget.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-                e.preventDefault();
-            }
-        });
-
-        container.addEventListener('touchend', (e) => {
-            if (touchTarget) {
-                touchTarget.classList.remove('dragging');
-                touchTarget.style.transform = 'translate(0, 0)';
-
-                const touch = e.changedTouches[0];
-                const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.column');
-
-                if (dropTarget && dropTarget !== touchTarget) {
-                    const allColumns = Array.from(container.children);
-                    const draggedIndex = allColumns.indexOf(touchTarget);
-                    const targetIndex = allColumns.indexOf(dropTarget);
-
-                    if (draggedIndex < targetIndex) {
-                        container.insertBefore(touchTarget, dropTarget.nextSibling);
-                    } else {
-                        container.insertBefore(touchTarget, dropTarget);
-                    }
-                    saveAppState();
-                }
-
-                touchTarget = null;
-            }
-        });
-    }
-
-    const leanCoffeeContainer = document.getElementById('lean-coffee-columns-container');
-    if (leanCoffeeContainer) {
-        leanCoffeeContainer.addEventListener('dragstart', (e) => {
-            const target = e.target.closest('.column');
-            if (target) {
-                target.classList.add('dragging');
-                e.dataTransfer.setData('text/plain', target.id);
-            }
-        });
-
-        leanCoffeeContainer.addEventListener('dragend', (e) => {
-            const target = e.target.closest('.column');
-            if (target) {
-                target.classList.remove('dragging');
-            }
-        });
-
-        leanCoffeeContainer.addEventListener('dragover', (e) => {
-            e.preventDefault();
-        });
-
-        leanCoffeeContainer.addEventListener('drop', (e) => {
-            e.preventDefault();
-            const draggedId = e.dataTransfer.getData('text/plain');
-            const draggedElement = document.getElementById(draggedId);
-            const target = e.target.closest('.column');
-
-            if (draggedElement && target && draggedElement !== target) {
-                const allColumns = Array.from(leanCoffeeContainer.children);
-                const draggedIndex = allColumns.indexOf(draggedElement);
-                const targetIndex = allColumns.indexOf(target);
-
-                if (draggedIndex < targetIndex) {
-                    leanCoffeeContainer.insertBefore(draggedElement, target.nextSibling);
-                } else {
-                    leanCoffeeContainer.insertBefore(draggedElement, target);
-                }
-                saveAppState();
-            }
-        });
-
-        let touchTarget = null;
-        let touchStartX = 0;
-        let touchStartY = 0;
-
-        leanCoffeeContainer.addEventListener('touchstart', (e) => {
-            const target = e.target.closest('.column');
-            if (target) {
-                touchTarget = target;
-                touchTarget.classList.add('dragging');
-                const touch = e.touches[0];
-                touchStartX = touch.clientX;
-                touchStartY = touch.clientY;
-                e.preventDefault();
-            }
-        });
-
-        leanCoffeeContainer.addEventListener('touchmove', (e) => {
-            if (touchTarget) {
-                const touch = e.touches[0];
-                const deltaX = touch.clientX - touchStartX;
-                const deltaY = touch.clientY - touchStartY;
-                touchTarget.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-                e.preventDefault();
-            }
-        });
-
-        leanCoffeeContainer.addEventListener('touchend', (e) => {
-            if (touchTarget) {
-                touchTarget.classList.remove('dragging');
-                touchTarget.style.transform = 'translate(0, 0)';
-
-                const touch = e.changedTouches[0];
-                const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.column');
-
-                if (dropTarget && dropTarget !== touchTarget) {
-                    const allColumns = Array.from(leanCoffeeContainer.children);
-                    const draggedIndex = allColumns.indexOf(touchTarget);
-                    const targetIndex = allColumns.indexOf(dropTarget);
-
-                    if (draggedIndex < targetIndex) {
-                        leanCoffeeContainer.insertBefore(touchTarget, dropTarget.nextSibling);
-                    } else {
-                        leanCoffeeContainer.insertBefore(touchTarget, dropTarget);
-                    }
-                    saveAppState();
-                }
-
-                touchTarget = null;
-            }
-        });
-    }
-
-    console.log('DOM fully loaded');
-    console.log('Checking for room-name-section:', document.getElementById('room-name-section'));
-    const editButton = document.getElementById('edit-room-name');
-    if (editButton) {
-        console.log('Edit button found');
-        editButton.addEventListener('click', toggleEditRoomName);
-    } else {
-        console.error('Edit button not found!');
-        alert('Error: Edit button not found. Check console.');
-    }
-});
-
-console.log('Script loaded');
