@@ -1,211 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Savage Agile</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Savage Agile</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1 class="app-title" onclick="returnToMainMenu()">Savage Agile</h1>
-        <h2 class="app-subtitle">Agilist Tool Box</h2>
-        <button id="theme-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
-    </header>
-    <main>
-        <div id="main-menu" style="display: block;">
-            <h2>What would you like to do?</h2>
-            <div class="button-container">
-                <button onclick="startIcebreaker()">Icebreaker</button>
-                <button onclick="startRetrospective()">Retrospective</button>
-                <button onclick="startWorkingAgreements()">Working Agreement</button>
-                <button onclick="startStoryPointing()">Story Pointing</button>
-                <button onclick="startLeanCoffee()">Lean Coffee</button>
-                <button onclick="clearData()" style="background-color: #ef4444;">Clear Data</button>
-            </div>
-        </div>
-        <div id="icebreaker-section" style="display: none;">
-            <h2>Icebreaker</h2>
-            <select id="icebreaker-presets" onchange="displayIcebreaker()">
-                <option value="">Select an icebreaker...</option>
-                <option value="What’s your favorite team memory?">What’s your favorite team memory?</option>
-                <option value="Share a fun fact about yourself!">Share a fun fact about yourself!</option>
-                <option value="What’s one thing you’re grateful for this week?">What’s one thing you’re grateful for this week?</option>
-                <option value="If you could have any superpower, what would it be?">If you could have any superpower, what would it be?</option>
-                <option value="What’s your go-to comfort food?">What’s your go-to comfort food?</option>
-                <option value="Describe your dream vacation!">Describe your dream vacation!</option>
-                <option value="What’s a hobby you’ve always wanted to try?">What’s a hobby you’ve always wanted to try?</option>
-            </select>
-            <button onclick="skipIcebreaker()" style="margin-left: 10px;">Skip Icebreaker</button>
-            <div id="icebreaker-display" style="display: none; margin-top: 20px;">
-                <h3 id="icebreaker-text"></h3>
-                <button onclick="returnToMainMenuFromIcebreaker()">Return to Main Page</button>
-            </div>
-        </div>
-        <div id="working-agreements-section" style="display: none;">
-            <h2>Working Agreements</h2>
-            <select id="agreement-presets" onchange="displayAgreement()">
-                <option value="">Select a preset...</option>
-                <option value="team-norms">Team Norms</option>
-                <option value="definition-of-ready">Definition of Ready</option>
-                <option value="definition-of-done">Definition of Done</option>
-            </select>
-            <div id="agreement-display" style="display: none; margin-top: 20px;">
-                <h3 id="agreement-text"></h3>
-                <input type="text" id="agreement-input" placeholder="Add an item...">
-                <button onclick="addAgreement()">Add</button>
-                <ul id="agreement-list"></ul>
-            </div>
-            <div style="margin-top: 20px;">
-                <button onclick="saveAgreements()">Save for Later</button>
-                <button onclick="proceedToRetrospective()" style="margin-left: 10px;">Proceed to Retrospective</button>
-                <button onclick="returnToMainMenuFromWorkingAgreements()" style="margin-left: 10px;">Return to Main Page</button>
-            </div>
-        </div>
-        <div id="retro-sections" style="display: none;">
-            <div id="room-name-section">
-                <h2 id="room-name">Team Retrospective</h2>
-                <button id="edit-room-name">Edit</button>
-                <div id="room-name-edit" style="display: none;">
-                    <input type="text" id="room-name-input" placeholder="Enter room name...">
-                    <button onclick="saveRoomName()">Save</button>
-                </div>
-            </div>
-            <div id="columns-section">
-                <h2>Columns</h2>
-                <div id="token-counter" style="margin-bottom: 10px;">
-                    Tokens remaining: <span id="tokens-remaining">3</span>
-                    <button onclick="resetTokens()" style="margin-left: 10px;">Reset Tokens</button>
-                </div>
-                <button onclick="addColumn()">Add Column</button>
-                <div id="columns-container"></div>
-            </div>
-            <div id="feedback-board">
-                <h2>Feedback</h2>
-                <input type="text" id="feedback-input" placeholder="Add feedback...">
-                <button onclick="addFeedback()">Submit</button>
-                <ul id="feedback-list"></ul>
-            </div>
-            <div id="action-items">
-                <h2>Action Items</h2>
-                <input type="text" id="action-input" placeholder="Add action item...">
-                <button onclick="addActionItem()">Add</button>
-                <ul id="action-list"></ul>
-            </div>
-            <div id="song-voting">
-                <h2>Song Voting</h2>
-                <input type="text" id="song-input" placeholder="Enter YouTube song URL...">
-                <button onclick="addSong()">Add Song</button>
-                <ul id="song-list"></ul>
-            </div>
-            <div style="margin-top: 20px;">
-                <button onclick="returnToMainMenuFromRetro()">Return to Main Page</button>
-            </div>
-        </div>
-        <div id="story-pointing-section" style="display: none;">
-            <h2>Story Pointing</h2>
-            <div id="story-title-section">
-                <input type="text" id="story-title-input" placeholder="Paste story title...">
-                <button onclick="saveStoryTitle()">Save Story</button>
-            </div>
-            <div id="story-title-display" style="display: none; margin-top: 10px;">
-                <h3 id="story-title-text"></h3>
-                <button onclick="editStoryTitle()">Edit Story Title</button>
-            </div>
-            <div id="sizing-method-section" style="margin-top: 20px;">
-                <h3>Choose Sizing Method</h3>
-                <select id="sizing-method" onchange="updateSizingOptions()">
-                    <option value="">Select a method...</option>
-                    <option value="fibonacci">Fibonacci</option>
-                    <option value="tshirt">T-Shirt Sizing</option>
-                </select>
-            </div>
-            <div id="voting-section" style="display: none; margin-top: 20px;">
-                <h3>Vote on Story Points</h3>
-                <select id="vote-options">
-                    <option value="">Select a size...</option>
-                </select>
-                <button onclick="submitVote()">Submit Vote</button>
-                <div id="vote-results" style="margin-top: 20px;">
-                    <h4>Vote Results</h4>
-                    <ul id="vote-results-list"></ul>
-                    <p id="vote-summary"></p>
-                </div>
-            </div>
-            <div style="margin-top: 20px;">
-                <button onclick="resetStoryPointing()">Reset Story Pointing</button>
-                <button onclick="returnToMainMenuFromStoryPointing()" style="margin-left: 10px;">Return to Main Page</button>
-            </div>
-        </div>
-        <div id="lean-coffee-section" style="display: none;">
-            <h2>Lean Coffee</h2>
-            <select id="lean-coffee-presets" onchange="prepopulateLeanCoffeeColumns()">
-                <option value="">Select a preset...</option>
-                <option value="custom">Custom</option>
-                <option value="start-stop-continue">Start, Stop, Continue</option>
-                <option value="well-didnt-improve">What Went Well, What Didn't, What to Improve</option>
-                <option value="mad-sad-glad">Mad, Sad, Glad</option>
-                <option value="lean-coffee">Lean Coffee</option>
-                <option value="liked-learned-lacked-longed">Liked, Learned, Lacked, Longed For</option>
-                <option value="four-ls">Four L's (Liked, Learned, Lacked, Longed For)</option>
-                <option value="keep-add-drop">Keep, Add, Drop</option>
-                <option value="plus-delta">Plus, Delta</option>
-                <option value="kalms">KALM (Keep, Add, Less, More)</option>
-                <option value="stop-start-continue">Stop, Start, Continue</option>
-                <option value="sailboat">Sailboat (Winds, Anchors, Rocks, Island)</option>
-                <option value="hot-air-balloon">Hot Air Balloon (Fuel, Weights, Sky, Ground)</option>
-                <option value="starfish">Starfish (Start, Stop, Continue, Do More, Do Less)</option>
-                <option value="car-retrospective">Car Retrospective (Engine, Brakes, Road Ahead)</option>
-                <option value="garden">Garden (Flowers, Weeds, Fertilizer)</option>
-                <option value="space-mission">Space Mission (Launch, Orbit, Gravity, Stars)</option>
-                <option value="pirate-ship">Pirate Ship (Sails, Storms, Treasure, Sharks)</option>
-                <option value="mountain-climb">Mountain Climb (Peak, Base, Gear, Obstacles)</option>
-                <option value="movie-set">Movie Set (Action, Cut, Script, Props)</option>
-                <option value="weather-report">Weather Report (Sunny, Cloudy, Stormy, Forecast)</option>
-                <option value="team-health">Team Health (Energy, Trust, Clarity)</option>
-                <option value="energy-levels">Energy Levels (High, Low, Recharge)</option>
-                <option value="trust-circle">Trust Circle (Safe, Risky, Build)</option>
-                <option value="communication-flow">Communication Flow (Clear, Blocked, Improve)</option>
-                <option value="collaboration-check">Collaboration Check (Synergy, Silos, Bridges)</option>
-                <option value="roles-and-goals">Roles and Goals (Defined, Unclear, Align)</option>
-                <option value="feedback-loop">Feedback Loop (Given, Received, Action)</option>
-                <option value="team-vibe">Team Vibe (Positive, Tense, Boost)</option>
-                <option value="workload-balance">Workload Balance (Light, Heavy, Adjust)</option>
-                <option value="celebration">Celebration (Wins, Challenges, Cheers)</option>
-                <option value="superhero">Superhero (Powers, Kryptonite, Mission)</option>
-                <option value="time-machine">Time Machine (Past, Present, Future)</option>
-                <option value="zoo">Zoo (Lions, Snakes, Monkeys)</option>
-                <option value="circus">Circus (Acts, Clowns, Audience)</option>
-                <option value="music-festival">Music Festival (Headliners, Backstage, Crowd)</option>
-                <option value="art-gallery">Art Gallery (Masterpieces, Sketches, Frames)</option>
-                <option value="cooking-show">Cooking Show (Ingredients, Recipe, Taste)</option>
-                <option value="olympics">Olympics (Gold, Silver, Bronze)</option>
-                <option value="space-exploration">Space Exploration (Stars, Black Holes, Planets)</option>
-                <option value="road-trip">Road Trip (Destination, Detours, Fuel)</option>
-                <option value="treasure-hunt">Treasure Hunt (Map, Clues, Treasure)</option>
-                <option value="game-show">Game Show (Wins, Challenges, Prizes)</option>
-                <option value="fashion-show">Fashion Show (Runway, Designs, Audience)</option>
-                <option value="magic-show">Magic Show (Tricks, Illusions, Reveal)</option>
-                <option value="science-experiment">Science Experiment (Hypothesis, Results, Conclusions)</option>
-                <option value="detective-case">Detective Case (Clues, Suspects, Solve)</option>
-                <option value="campfire">Campfire (Stories, Sparks, Warmth)</option>
-                <option value="world-tour">World Tour (Stops, Highlights, Memories)</option>
-                <option value="puzzle">Puzzle (Pieces, Fit, Missing)</option>
-            </select>
-            <button onclick="addLeanCoffeeColumn()">Add Column</button>
-            <div id="lean-coffee-custom-columns-form" style="display: none; margin-top: 10px;">
-                <input type="text" id="lean-coffee-custom-column-1" placeholder="Column 1 name">
-                <input type="text" id="lean-coffee-custom-column-2" placeholder="Column 2 name">
-                <input type="text" id="lean-coffee-custom-column-3" placeholder="Column 3 name">
-                <button onclick="createLeanCoffeeCustomColumns()">Create</button>
-            </div>
-            <div id="lean-coffee-columns-container"></div>
-            <div style="margin-top: 20px;">
-                <button onclick="returnToMainMenuFromLeanCoffee()">Return to Main Page</button>
-            </div>
-        </div>
-    </main>
-    <script src="https://www.youtube.com/iframe_api"></script>
-    <script src="script.js"></script>
+  <div id="main-menu" class="container">
+    <h1>Savage Agile</h1>
+    <button onclick="showPage('icebreakers')">Icebreakers</button>
+    <button onclick="showPage('working-agreement')">Working Agreement</button>
+    <button onclick="showPage('retrospectives')">Retrospectives</button>
+    <button onclick="showPage('story-pointing')">Story Pointing</button>
+    <button onclick="showPage('lean-coffee')">Lean Coffee</button>
+    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  </div>
+
+  <div id="working-agreement" class="container" style="display: none;">
+    <h1>Working Agreement</h1>
+    <button onclick="showPage('team-norms')">Team Norms</button>
+    <button onclick="showPage('definition-ready')">Definition of Ready</button>
+    <button onclick="showPage('definition-done')">Definition of Done</button>
+    <button onclick="showPage('main-menu')">Return to Main</button>
+  </div>
+
+  <!-- Placeholder sections for future implementation -->
+  <div id="icebreakers" class="container" style="display: none;">
+    <h1>Icebreakers</h1>
+    <button onclick="showPage('main-menu')">Return to Main</button>
+  </div>
+  <div id="retrospectives" class="container" style="display: none;">
+    <h1>Retrospectives</h1>
+    <button onclick="showPage('main-menu')">Return to Main</button>
+  </div>
+  <div id="story-pointing" class="container" style="display: none;">
+    <h1>Story Pointing</h1>
+    <button onclick="showPage('main-menu')">Return to Main</button>
+  </div>
+  <div id="lean-coffee" class="container" style="display: none;">
+    <h1>Lean Coffee</h1>
+    <button onclick="showPage('main-menu')">Return to Main</button>
+  </div>
+  <div id="team-norms" class="container" style="display: none;">
+    <h1>Team Norms</h1>
+    <button onclick="showPage('working-agreement')">Back to Working Agreement</button>
+  </div>
+  <div id="definition-ready" class="container" style="display: none;">
+    <h1>Definition of Ready</h1>
+    <button onclick="showPage('working-agreement')">Back to Working Agreement</button>
+  </div>
+  <div id="definition-done" class="container" style="display: none;">
+    <h1>Definition of Done</h1>
+    <button onclick="showPage('working-agreement')">Back to Working Agreement</button>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
