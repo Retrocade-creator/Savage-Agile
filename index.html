@@ -10,10 +10,10 @@
   <header>
     <img src="text-1745606504558.png" alt="Savage Agile" class="clickable" onclick="returnToMainMenu()">
     <p>Agilist Tool Box</p>
-    <button onclick="toggleTheme()">Toggle Dark Mode</button>
   </header>
 
   <div id="main-menu" class="container">
+    <p class="team-help-text">How would you like to help your team?</p>
     <button onclick="startIcebreaker()">Icebreakers</button>
     <button onclick="startWorkingAgreements()">Working Agreement</button>
     <button onclick="startRetrospective()">Retrospectives</button>
@@ -157,6 +157,7 @@
   <div id="story-pointing-section" class="container" style="display: none;">
     <h2>Story Pointing</h2>
     <div id="sizing-method-section">
+      <label for="sizing-method">Choose Sizing method:</label>
       <select id="sizing-method" onchange="updateSizingOptions()">
         <option value="">Select sizing method...</option>
         <option value="fibonacci">Fibonacci</option>
@@ -185,16 +186,16 @@
 
   <div id="lean-coffee-section" class="container" style="display: none;">
     <h2>Lean Coffee</h2>
-    <select id="lean-coffee-presets" onchange="prepopulateLeanCoffeeColumns()">
-      <option value="">Select a preset...</option>
-      <option value="lean-coffee">Lean Coffee (To Discuss, Discussing, Discussed)</option>
-    </select>
     <div id="lean-coffee-columns-container"></div>
     <button onclick="addLeanCoffeeColumn()">Add Column</button>
     <button onclick="saveLeanCoffeeToPDF()">Save to PDF</button>
     <p>Tokens Remaining: <span id="tokens-remaining">3</span></p>
     <button onclick="resetTokens()">Reset Tokens</button>
     <button onclick="returnToMainMenuFromLeanCoffee()">Return to Main</button>
+  </div>
+
+  <div class="toggle-dark-mode">
+    <button onclick="toggleTheme()">Toggle Dark Mode</button>
   </div>
 
   <footer>
