@@ -195,7 +195,10 @@
   </div>
 
   <div class="toggle-dark-mode">
-    <button onclick="toggleTheme()">Toggle Dark Mode</button>
+    <label class="switch">
+      <input type="checkbox" id="dark-mode-toggle" onchange="toggleTheme()">
+      <span class="slider"></span>
+    </label>
   </div>
 
   <footer>

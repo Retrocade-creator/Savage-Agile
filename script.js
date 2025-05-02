@@ -340,6 +340,12 @@ function loadAppState() {
         storyPointingVotes = votes || [];
         displayVoteResults();
     }
+
+    // Sync dark mode toggle state
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    if (darkModeToggle) {
+        darkModeToggle.checked = document.body.classList.contains('dark-mode');
+    }
 }
 
 function clearData() {
@@ -355,6 +361,7 @@ function toggleTheme() {
     body.classList.toggle('dark-mode');
     const isDarkMode = body.classList.contains('dark-mode');
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    document.getElementById('dark-mode-toggle').checked = isDarkMode;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1133,10 +1140,10 @@ function addColumnFeedback(columnId) {
 }
 
 function updateTokenCounter() {
-    const tokensRemainingElement = document.getElementById('tokens-remaining');
-    if (tokensRemainingElement) {
-        tokensRemainingElement.textContent = tokensRemaining;
-    }
+    const tokensRemainingElements = document.querySelectorAll('#tokens-remaining');
+    tokensRemainingElements.forEach(element => {
+        element.textContent = tokensRemaining;
+    });
 }
 
 function disableAllVoteButtons() {
@@ -1526,3 +1533,50 @@ function saveLeanCoffeeToPDF() {
 
 function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
     leanCoffeeColumnCount++;
+    const container = document.getElementById('lean-coffee-columns-container');
+    const columnId = `lean-coffee-column-${leanCoffeeColumnCount}`;
+
+    if (!container) {
+        alert('Error: Lean Coffee columns container not found.');
+        return;
+    }
+
+    const column = document.createElement('div');
+    column.className = 'column hoverable-column';
+    column.id = columnId;
+    column.setAttribute('draggable', 'true');
+
+    const normalizedName = name.toLowerCase();
+    if (normalizedName.includes('start') || normalizedName.includes('to discuss') || normalizedName.includes('liked') || normalizedName.includes('keep') || normalizedName.includes('plus') || normalizedName.includes('winds') || normalizedName.includes('fuel') || normalizedName.includes('energy') || normalizedName.includes('trust') || normalizedName.includes('wins')) column.classList.add('start');
+    else if (normalizedName.includes('stop') || normalizedName.includes('discussing') || normalizedName.includes('lacked') || normalizedName.includes('drop') || normalizedName.includes('delta') || normalizedName.includes('anchors') || normalizedName.includes('weights') || normalizedName.includes('risky') || normalizedName.includes('challenges')) column.classList.add('stop');
+    else if (normalizedName.includes('continue') || normalizedName.includes('discussed') || normalizedName.includes('learned') || normalizedName.includes('add') || normalizedName.includes('rocks') || normalizedName.includes('sky') || normalizedName.includes('build') || normalizedName.includes('cheers')) column.classList.add('continue');
+
+    const header = document.createElement('h3');
+    header.id = `${columnId}-name`;
+    header.textContent = name;
+    column.appendChild(header);
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.className = 'edit';
+    editButton.onclick = () => toggleEditColumnName(columnId);
+    buttonContainer.appendChild(editButton);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.className = 'delete';
+    deleteButton.onclick = () => {
+        if (confirm('Are you sure you want to delete this column and all its feedback?')) {
+            column.remove();
+            saveAppState();
+        }
+    };
+    buttonContainer.appendChild(deleteButton);
+
+    column.appendChild(buttonContainer);
+
+    const editSection = document.createElement('div');
+    editSection.className
