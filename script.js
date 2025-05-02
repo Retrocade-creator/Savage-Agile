@@ -21,8 +21,21 @@ function hideAllSections() {
     const element = document.getElementById(section);
     if (element) {
       element.style.display = 'none';
+    } else {
+      console.warn(`Section ${section} not found in DOM`);
     }
   });
+}
+
+function showSection(sectionId) {
+  hideAllSections();
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.style.display = 'block';
+    console.log(`Showing section: ${sectionId}`);
+  } else {
+    console.error(`Cannot show section: ${sectionId} not found`);
+  }
 }
 
 function saveAppState() {
@@ -541,21 +554,21 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
     });
 
-    leanCoffeeContainer.addEventListener('drop', (e) => {
+    container.addEventListener('drop', (e) => {
       e.preventDefault();
       const draggedId = e.dataTransfer.getData('text/plain');
       const draggedElement = document.getElementById(draggedId);
       const target = e.target.closest('.column');
 
       if (draggedElement && target && draggedElement !== target) {
-        const allColumns = Array.from(leanCoffeeContainer.children);
+        const allColumns = Array.from(container.children);
         const draggedIndex = allColumns.indexOf(draggedElement);
         const targetIndex = allColumns.indexOf(target);
 
         if (draggedIndex < targetIndex) {
-          leanCoffeeContainer.insertBefore(draggedElement, target.nextSibling);
+          container.insertBefore(draggedElement, target.nextSibling);
         } else {
-          leanCoffeeContainer.insertBefore(draggedElement, target);
+          container.insertBefore(draggedElement, target);
         }
         saveAppState();
       }
@@ -625,19 +638,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function returnToMainMenu() {
-  hideAllSections();
-  const mainMenu = document.getElementById('main-menu');
-  if (mainMenu) {
-    mainMenu.style.display = 'block';
-  }
+  showSection('main-menu');
 }
 
 function startIcebreaker() {
-  hideAllSections();
-  const icebreakerSection = document.getElementById('icebreaker-section');
-  if (icebreakerSection) {
-    icebreakerSection.style.display = 'block';
-  }
+  showSection('icebreaker-section');
 }
 
 function displayIcebreaker() {
@@ -655,27 +660,15 @@ function displayIcebreaker() {
 }
 
 function returnToMainMenuFromIcebreaker() {
-  hideAllSections();
-  const mainMenu = document.getElementById('main-menu');
-  if (mainMenu) {
-    mainMenu.style.display = 'block';
-  }
+  showSection('main-menu');
 }
 
 function startWorkingAgreements() {
-  hideAllSections();
-  const workingAgreementsSection = document.getElementById('working-agreements-section');
-  if (workingAgreementsSection) {
-    workingAgreementsSection.style.display = 'block';
-  }
+  showSection('working-agreements-section');
 }
 
 function showTeamNorms() {
-  hideAllSections();
-  const teamNorms = document.getElementById('team-norms');
-  if (teamNorms) {
-    teamNorms.style.display = 'block';
-  }
+  showSection('team-norms');
 }
 
 function addTeamNorm() {
@@ -721,20 +714,12 @@ function addTeamNorm() {
 }
 
 function saveTeamNorms() {
-  hideAllSections();
-  const workingAgreementsSection = document.getElementById('working-agreements-section');
-  if (workingAgreementsSection) {
-    workingAgreementsSection.style.display = 'block';
-  }
+  showSection('working-agreements-section');
   saveAppState();
 }
 
 function showDefinitionOfReady() {
-  hideAllSections();
-  const definitionReady = document.getElementById('definition-ready');
-  if (definitionReady) {
-    definitionReady.style.display = 'block';
-  }
+  showSection('definition-ready');
 }
 
 function addDefinitionOfReady() {
@@ -780,20 +765,12 @@ function addDefinitionOfReady() {
 }
 
 function saveDefinitionOfReady() {
-  hideAllSections();
-  const workingAgreementsSection = document.getElementById('working-agreements-section');
-  if (workingAgreementsSection) {
-    workingAgreementsSection.style.display = 'block';
-  }
+  showSection('working-agreements-section');
   saveAppState();
 }
 
 function showDefinitionOfDone() {
-  hideAllSections();
-  const definitionDone = document.getElementById('definition-done');
-  if (definitionDone) {
-    definitionDone.style.display = 'block';
-  }
+  showSection('definition-done');
 }
 
 function addDefinitionOfDone() {
@@ -839,20 +816,12 @@ function addDefinitionOfDone() {
 }
 
 function saveDefinitionOfDone() {
-  hideAllSections();
-  const workingAgreementsSection = document.getElementById('working-agreements-section');
-  if (workingAgreementsSection) {
-    workingAgreementsSection.style.display = 'block';
-  }
+  showSection('working-agreements-section');
   saveAppState();
 }
 
 function returnToWorkingAgreements() {
-  hideAllSections();
-  const workingAgreementsSection = document.getElementById('working-agreements-section');
-  if (workingAgreementsSection) {
-    workingAgreementsSection.style.display = 'block';
-  }
+  showSection('working-agreements-section');
   saveAppState();
 }
 
@@ -903,19 +872,11 @@ function saveWorkingAgreementToPDF() {
 }
 
 function returnToMainMenuFromWorkingAgreements() {
-  hideAllSections();
-  const mainMenu = document.getElementById('main-menu');
-  if (mainMenu) {
-    mainMenu.style.display = 'block';
-  }
+  showSection('main-menu');
 }
 
 function startRetrospective() {
-  hideAllSections();
-  const retroSections = document.getElementById('retro-sections');
-  if (retroSections) {
-    retroSections.style.display = 'block';
-  }
+  showSection('retro-sections');
   resetTokens();
 }
 
@@ -995,11 +956,7 @@ function prepopulateRetroColumns() {
 }
 
 function returnToMainMenuFromRetro() {
-  hideAllSections();
-  const mainMenu = document.getElementById('main-menu');
-  if (mainMenu) {
-    mainMenu.style.display = 'block';
-  }
+  showSection('main-menu');
 }
 
 function toggleEditRoomName() {
@@ -1400,11 +1357,7 @@ function addSong() {
 }
 
 function startStoryPointing() {
-  hideAllSections();
-  const storyPointingSection = document.getElementById('story-pointing-section');
-  if (storyPointingSection) {
-    storyPointingSection.style.display = 'block';
-  }
+  showSection('story-pointing-section');
 }
 
 function saveStoryTitle() {
@@ -1558,19 +1511,11 @@ function resetStoryPointing() {
 }
 
 function returnToMainMenuFromStoryPointing() {
-  hideAllSections();
-  const mainMenu = document.getElementById('main-menu');
-  if (mainMenu) {
-    mainMenu.style.display = 'block';
-  }
+  showSection('main-menu');
 }
 
 function startLeanCoffee() {
-  hideAllSections();
-  const leanCoffeeSection = document.getElementById('lean-coffee-section');
-  if (leanCoffeeSection) {
-    leanCoffeeSection.style.display = 'block';
-  }
+  showSection('lean-coffee-section');
   resetTokens();
 }
 
@@ -1636,7 +1581,7 @@ function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
   const normalizedName = name.toLowerCase();
   if (normalizedName.includes('start') || normalizedName.includes('to discuss') || normalizedName.includes('liked') || normalizedName.includes('keep') || normalizedName.includes('plus') || normalizedName.includes('winds') || normalizedName.includes('fuel') || normalizedName.includes('energy') || normalizedName.includes('trust') || normalizedName.includes('wins')) column.classList.add('start');
   else if (normalizedName.includes('stop') || normalizedName.includes('discussing') || normalizedName.includes('lacked') || normalizedName.includes('drop') || normalizedName.includes('delta') || normalizedName.includes('anchors') || normalizedName.includes('weights') || normalizedName.includes('risky') || normalizedName.includes('challenges')) column.classList.add('stop');
-  else if (normalizedName.includes('continue') || normalizedName.includes('discussed') || normalizedName.includes('learned') || normalizedilanName.includes('add') || normalizedName.includes('rocks') || normalizedName.includes('sky') || normalizedName.includes('build') || normalizedName.includes('cheers')) column.classList.add('continue');
+  else if (normalizedName.includes('continue') || normalizedName.includes('discussed') || normalizedName.includes('learned') || normalizedName.includes('add') || normalizedName.includes('rocks') || normalizedName.includes('sky') || normalizedName.includes('build') || normalizedName.includes('cheers')) column.classList.add('continue');
 
   const header = document.createElement('h3');
   header.id = `${columnId}-name`;
@@ -1701,9 +1646,5 @@ function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
 }
 
 function returnToMainMenuFromLeanCoffee() {
-  hideAllSections();
-  const mainMenu = document.getElementById('main-menu');
-  if (mainMenu) {
-    mainMenu.style.display = 'block';
-  }
+  showSection('main-menu');
 }
