@@ -49,10 +49,10 @@ function saveAppState() {
   const columns = document.querySelectorAll('#columns-container .column');
   columns.forEach(column => {
     const columnId = column.id;
-    const columnName = document.getElementById(`${columnId}-name`).textContent;
-    const feedbackItems = Array.from(document.getElementById(`${columnId}-feedback-list`).children).map(li => ({
-      text: li.childNodes[2].textContent.trim(),
-      votes: parseInt(li.querySelector('.vote-count').textContent)
+    const columnName = document.getElementById(`${columnId}-name`)?.textContent || 'Unnamed';
+    const feedbackItems = Array.from(document.getElementById(`${columnId}-feedback-list`)?.children || []).map(li => ({
+      text: li.childNodes[2]?.textContent?.trim() || '',
+      votes: parseInt(li.querySelector('.vote-count')?.textContent || '0')
     }));
     state.columns.push({ id: columnId, name: columnName, feedback: feedbackItems });
   });
@@ -60,50 +60,50 @@ function saveAppState() {
   const leanCoffeeColumns = document.querySelectorAll('#lean-coffee-columns-container .column');
   leanCoffeeColumns.forEach(column => {
     const columnId = column.id;
-    const columnName = document.getElementById(`${columnId}-name`).textContent;
-    const feedbackItems = Array.from(document.getElementById(`${columnId}-feedback-list`).children).map(li => ({
-      text: li.childNodes[2].textContent.trim(),
-      votes: parseInt(li.querySelector('.vote-count').textContent)
+    const columnName = document.getElementById(`${columnId}-name`)?.textContent || 'Unnamed';
+    const feedbackItems = Array.from(document.getElementById(`${columnId}-feedback-list`)?.children || []).map(li => ({
+      text: li.childNodes[2]?.textContent?.trim() || '',
+      votes: parseInt(li.querySelector('.vote-count')?.textContent || '0')
     }));
     state.leanCoffeeColumns.push({ id: columnId, name: columnName, feedback: feedbackItems });
   });
 
   const feedbackList = document.getElementById('feedback-list');
-  state.feedbackBoard = Array.from(feedbackList.children).map(li => li.childNodes[0].textContent.trim());
+  state.feedbackBoard = Array.from(feedbackList?.children || []).map(li => li.childNodes[0]?.textContent?.trim() || '');
 
   const actionList = document.getElementById('action-list');
-  state.actionItems = Array.from(actionList.children).map(li => ({
-    text: li.childNodes[1].textContent.trim(),
-    checked: li.querySelector('input[type="checkbox"]').checked
+  state.actionItems = Array.from(actionList?.children || []).map(li => ({
+    text: li.childNodes[1]?.textContent?.trim() || '',
+    checked: li.querySelector('input[type="checkbox"]')?.checked || false
   }));
 
   const songList = document.getElementById('song-list');
-  state.songs = Array.from(songList.children).map(li => ({
-    videoId: li.querySelector('.song-player').id.replace('player-', ''),
-    votes: parseInt(li.querySelector('.vote-count').textContent)
+  state.songs = Array.from(songList?.children || []).map(li => ({
+    videoId: li.querySelector('.song-player')?.id.replace('player-', '') || '',
+    votes: parseInt(li.querySelector('.vote-count')?.textContent || '0')
   }));
 
   const teamNormsList = document.querySelector('#team-norms-list');
   if (teamNormsList) {
     state.agreements.teamNorms = Array.from(teamNormsList.children).map(li => ({
-      text: li.childNodes[2].textContent.trim(),
-      votes: parseInt(li.querySelector('.vote-count').textContent)
+      text: li.childNodes[2]?.textContent?.trim() || '',
+      votes: parseInt(li.querySelector('.vote-count')?.textContent || '0')
     }));
   }
 
   const definitionOfReadyList = document.querySelector('#definition-ready-list');
   if (definitionOfReadyList) {
     state.agreements.definitionOfReady = Array.from(definitionOfReadyList.children).map(li => ({
-      text: li.childNodes[2].textContent.trim(),
-      votes: parseInt(li.querySelector('.vote-count').textContent)
+      text: li.childNodes[2]?.textContent?.trim() || '',
+      votes: parseInt(li.querySelector('.vote-count')?.textContent || '0')
     }));
   }
 
   const definitionOfDoneList = document.querySelector('#definition-done-list');
   if (definitionOfDoneList) {
     state.agreements.definitionOfDone = Array.from(definitionOfDoneList.children).map(li => ({
-      text: li.childNodes[2].textContent.trim(),
-      votes: parseInt(li.querySelector('.vote-count').textContent)
+      text: li.childNodes[2]?.textContent?.trim() || '',
+      votes: parseInt(li.querySelector('.vote-count')?.textContent || '0')
     }));
   }
 
@@ -157,7 +157,10 @@ function loadAppState() {
         saveAppState();
       };
       li.appendChild(deleteBtn);
-      document.getElementById(`${columnId}-feedback-list`).appendChild(li);
+      const feedbackList = document.getElementById(`${columnId}-feedback-list`);
+      if (feedbackList) {
+        feedbackList.appendChild(li);
+      }
     });
   });
 
@@ -197,7 +200,10 @@ function loadAppState() {
         saveAppState();
       };
       li.appendChild(deleteBtn);
-      document.getElementById(`${columnId}-feedback-list`).appendChild(li);
+      const feedbackList = document.getElementById(`${columnId}-feedback-list`);
+      if (feedbackList) {
+        feedbackList.appendChild(li);
+      }
     });
   });
 
@@ -213,7 +219,9 @@ function loadAppState() {
       saveAppState();
     };
     li.appendChild(deleteBtn);
-    feedbackList.appendChild(li);
+    if (feedbackList) {
+      feedbackList.appendChild(li);
+    }
   });
 
   const actionList = document.getElementById('action-list');
@@ -237,7 +245,9 @@ function loadAppState() {
       saveAppState();
     };
     li.appendChild(deleteBtn);
-    actionList.appendChild(li);
+    if (actionList) {
+      actionList.appendChild(li);
+    }
   });
 
   const songList = document.getElementById('song-list');
@@ -278,7 +288,9 @@ function loadAppState() {
     playerContainer.appendChild(playerDiv);
     li.appendChild(playerContainer);
 
-    songList.appendChild(li);
+    if (songList) {
+      songList.appendChild(li);
+    }
 
     players[song.videoId] = new YT.Player(`player-${song.videoId}`, {
       height: '112',
@@ -346,16 +358,37 @@ function loadAppState() {
   if (state.storyPointing) {
     const { storyTitle, sizingMethod, votes } = state.storyPointing;
     if (sizingMethod) {
-      document.getElementById('sizing-method').value = sizingMethod;
-      document.getElementById('sizing-method-section').style.display = 'block';
-      document.getElementById('story-title-section').style.display = 'block';
+      const sizingMethodElement = document.getElementById('sizing-method');
+      if (sizingMethodElement) {
+        sizingMethodElement.value = sizingMethod;
+      }
+      const sizingMethodSection = document.getElementById('sizing-method-section');
+      if (sizingMethodSection) {
+        sizingMethodSection.style.display = 'block';
+      }
+      const storyTitleSection = document.getElementById('story-title-section');
+      if (storyTitleSection) {
+        storyTitleSection.style.display = 'block';
+      }
       updateSizingOptions();
     }
     if (storyTitle) {
-      document.getElementById('story-title-text').textContent = storyTitle;
-      document.getElementById('story-title-display').style.display = 'block';
-      document.getElementById('story-title-section').style.display = 'none';
-      document.getElementById('voting-section').style.display = 'block';
+      const storyTitleText = document.getElementById('story-title-text');
+      if (storyTitleText) {
+        storyTitleText.textContent = storyTitle;
+      }
+      const storyTitleDisplay = document.getElementById('story-title-display');
+      if (storyTitleDisplay) {
+        storyTitleDisplay.style.display = 'block';
+      }
+      const storyTitleSection = document.getElementById('story-title-section');
+      if (storyTitleSection) {
+        storyTitleSection.style.display = 'none';
+      }
+      const votingSection = document.getElementById('voting-section');
+      if (votingSection) {
+        votingSection.style.display = 'block';
+      }
     }
     storyPointingVotes = votes || [];
     displayVoteResults();
@@ -380,7 +413,10 @@ function toggleTheme() {
   body.classList.toggle('dark-mode');
   const isDarkMode = body.classList.contains('dark-mode');
   localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-  document.getElementById('dark-mode-toggle').checked = isDarkMode;
+  const darkModeToggle = document.getElementById('dark-mode-toggle');
+  if (darkModeToggle) {
+    darkModeToggle.checked = isDarkMode;
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -590,16 +626,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function returnToMainMenu() {
   hideAllSections();
-  document.getElementById('main-menu').style.display = 'block';
+  const mainMenu = document.getElementById('main-menu');
+  if (mainMenu) {
+    mainMenu.style.display = 'block';
+  }
 }
 
 function startIcebreaker() {
   hideAllSections();
-  document.getElementById('icebreaker-section').style.display = 'block';
+  const icebreakerSection = document.getElementById('icebreaker-section');
+  if (icebreakerSection) {
+    icebreakerSection.style.display = 'block';
+  }
 }
 
 function displayIcebreaker() {
-  const preset = document.getElementById('icebreaker-presets').value;
+  const preset = document.getElementById('icebreaker-presets')?.value;
   const displayDiv = document.getElementById('icebreaker-display');
   const displayText = document.getElementById('icebreaker-text');
 
@@ -614,23 +656,32 @@ function displayIcebreaker() {
 
 function returnToMainMenuFromIcebreaker() {
   hideAllSections();
-  document.getElementById('main-menu').style.display = 'block';
+  const mainMenu = document.getElementById('main-menu');
+  if (mainMenu) {
+    mainMenu.style.display = 'block';
+  }
 }
 
 function startWorkingAgreements() {
   hideAllSections();
-  document.getElementById('working-agreements-section').style.display = 'block';
+  const workingAgreementsSection = document.getElementById('working-agreements-section');
+  if (workingAgreementsSection) {
+    workingAgreementsSection.style.display = 'block';
+  }
 }
 
 function showTeamNorms() {
   hideAllSections();
-  document.getElementById('team-norms').style.display = 'block';
+  const teamNorms = document.getElementById('team-norms');
+  if (teamNorms) {
+    teamNorms.style.display = 'block';
+  }
 }
 
 function addTeamNorm() {
   const input = document.getElementById('team-norms-input');
   const agreementList = document.getElementById('team-norms-list');
-  const agreementText = input.value.trim();
+  const agreementText = input?.value?.trim() || '';
 
   if (!input || !agreementList) {
     alert('Error: Team Norms elements not found.');
@@ -671,19 +722,25 @@ function addTeamNorm() {
 
 function saveTeamNorms() {
   hideAllSections();
-  document.getElementById('working-agreements-section').style.display = 'block';
+  const workingAgreementsSection = document.getElementById('working-agreements-section');
+  if (workingAgreementsSection) {
+    workingAgreementsSection.style.display = 'block';
+  }
   saveAppState();
 }
 
 function showDefinitionOfReady() {
   hideAllSections();
-  document.getElementById('definition-ready').style.display = 'block';
+  const definitionReady = document.getElementById('definition-ready');
+  if (definitionReady) {
+    definitionReady.style.display = 'block';
+  }
 }
 
 function addDefinitionOfReady() {
   const input = document.getElementById('definition-ready-input');
   const agreementList = document.getElementById('definition-ready-list');
-  const agreementText = input.value.trim();
+  const agreementText = input?.value?.trim() || '';
 
   if (!input || !agreementList) {
     alert('Error: Definition of Ready elements not found.');
@@ -724,19 +781,25 @@ function addDefinitionOfReady() {
 
 function saveDefinitionOfReady() {
   hideAllSections();
-  document.getElementById('working-agreements-section').style.display = 'block';
+  const workingAgreementsSection = document.getElementById('working-agreements-section');
+  if (workingAgreementsSection) {
+    workingAgreementsSection.style.display = 'block';
+  }
   saveAppState();
 }
 
 function showDefinitionOfDone() {
   hideAllSections();
-  document.getElementById('definition-done').style.display = 'block';
+  const definitionDone = document.getElementById('definition-done');
+  if (definitionDone) {
+    definitionDone.style.display = 'block';
+  }
 }
 
 function addDefinitionOfDone() {
   const input = document.getElementById('definition-done-input');
   const agreementList = document.getElementById('definition-done-list');
-  const agreementText = input.value.trim();
+  const agreementText = input?.value?.trim() || '';
 
   if (!input || !agreementList) {
     alert('Error: Definition of Done elements not found.');
@@ -777,13 +840,19 @@ function addDefinitionOfDone() {
 
 function saveDefinitionOfDone() {
   hideAllSections();
-  document.getElementById('working-agreements-section').style.display = 'block';
+  const workingAgreementsSection = document.getElementById('working-agreements-section');
+  if (workingAgreementsSection) {
+    workingAgreementsSection.style.display = 'block';
+  }
   saveAppState();
 }
 
 function returnToWorkingAgreements() {
   hideAllSections();
-  document.getElementById('working-agreements-section').style.display = 'block';
+  const workingAgreementsSection = document.getElementById('working-agreements-section');
+  if (workingAgreementsSection) {
+    workingAgreementsSection.style.display = 'block';
+  }
   saveAppState();
 }
 
@@ -813,8 +882,8 @@ function saveWorkingAgreementToPDF() {
       const ul = document.createElement('ul');
       Array.from(list.children).forEach(item => {
         const li = document.createElement('li');
-        const text = item.childNodes[2].textContent.trim();
-        const votes = item.querySelector('.vote-count').textContent;
+        const text = item.childNodes[2]?.textContent?.trim() || '';
+        const votes = item.querySelector('.vote-count')?.textContent || '0';
         li.textContent = `${text} (Votes: ${votes})`;
         ul.appendChild(li);
       });
@@ -835,17 +904,23 @@ function saveWorkingAgreementToPDF() {
 
 function returnToMainMenuFromWorkingAgreements() {
   hideAllSections();
-  document.getElementById('main-menu').style.display = 'block';
+  const mainMenu = document.getElementById('main-menu');
+  if (mainMenu) {
+    mainMenu.style.display = 'block';
+  }
 }
 
 function startRetrospective() {
   hideAllSections();
-  document.getElementById('retro-sections').style.display = 'block';
+  const retroSections = document.getElementById('retro-sections');
+  if (retroSections) {
+    retroSections.style.display = 'block';
+  }
   resetTokens();
 }
 
 function prepopulateRetroColumns() {
-  const preset = document.getElementById('retro-presets').value;
+  const preset = document.getElementById('retro-presets')?.value;
   if (!preset) return;
 
   const container = document.getElementById('columns-container');
@@ -921,7 +996,10 @@ function prepopulateRetroColumns() {
 
 function returnToMainMenuFromRetro() {
   hideAllSections();
-  document.getElementById('main-menu').style.display = 'block';
+  const mainMenu = document.getElementById('main-menu');
+  if (mainMenu) {
+    mainMenu.style.display = 'block';
+  }
 }
 
 function toggleEditRoomName() {
@@ -946,7 +1024,7 @@ function toggleEditRoomName() {
 function saveRoomName() {
   const input = document.getElementById('room-name-input');
   const roomName = document.getElementById('room-name');
-  const newName = input.value.trim();
+  const newName = input?.value?.trim() || '';
 
   if (!input || !roomName) {
     alert('Error: Room name elements not found.');
@@ -1067,7 +1145,7 @@ function saveColumnName(columnId) {
   const input = document.getElementById(`${columnId}-input`);
   const nameDisplay = document.getElementById(`${columnId}-name`);
   const column = document.getElementById(columnId);
-  const newName = input.value.trim();
+  const newName = input?.value?.trim() || '';
 
   if (!input || !nameDisplay || !column) {
     alert('Error: Column elements not found.');
@@ -1091,7 +1169,7 @@ function saveColumnName(columnId) {
 function addColumnFeedback(columnId) {
   const input = document.getElementById(`${columnId}-feedback-input`);
   const feedbackList = document.getElementById(`${columnId}-feedback-list`);
-  const feedbackText = input.value.trim();
+  const feedbackText = input?.value?.trim() || '';
 
   if (!input || !feedbackList) {
     alert('Error: Feedback elements not found.');
@@ -1170,7 +1248,7 @@ function resetTokens() {
 function addFeedback() {
   const input = document.getElementById('feedback-input');
   const feedbackList = document.getElementById('feedback-list');
-  const feedbackText = input.value.trim();
+  const feedbackText = input?.value?.trim() || '';
 
   if (!input || !feedbackList) {
     alert('Error: Feedback elements not found.');
@@ -1199,7 +1277,7 @@ function addFeedback() {
 function addActionItem() {
   const input = document.getElementById('action-input');
   const actionList = document.getElementById('action-list');
-  const actionText = input.value.trim();
+  const actionText = input?.value?.trim() || '';
 
   if (!input || !actionList) {
     alert('Error: Action elements not found.');
@@ -1241,7 +1319,7 @@ function extractYouTubeVideoId(url) {
 function addSong() {
   const input = document.getElementById('song-input');
   const songList = document.getElementById('song-list');
-  const songUrl = input.value.trim();
+  const songUrl = input?.value?.trim() || '';
 
   if (!input || !songList) {
     alert('Error: Song elements not found.');
@@ -1323,7 +1401,10 @@ function addSong() {
 
 function startStoryPointing() {
   hideAllSections();
-  document.getElementById('story-pointing-section').style.display = 'block';
+  const storyPointingSection = document.getElementById('story-pointing-section');
+  if (storyPointingSection) {
+    storyPointingSection.style.display = 'block';
+  }
 }
 
 function saveStoryTitle() {
@@ -1367,7 +1448,7 @@ function editStoryTitle() {
 }
 
 function updateSizingOptions() {
-  const method = document.getElementById('sizing-method').value;
+  const method = document.getElementById('sizing-method')?.value;
   const voteOptions = document.getElementById('vote-options');
   const storyTitleSection = document.getElementById('story-title-section');
 
@@ -1402,7 +1483,7 @@ function updateSizingOptions() {
 
 function submitVote() {
   const voteOptions = document.getElementById('vote-options');
-  const vote = voteOptions.value;
+  const vote = voteOptions?.value;
 
   if (!vote) {
     alert('Please select a size to vote.');
@@ -1430,7 +1511,7 @@ function displayVoteResults() {
   });
 
   if (storyPointingVotes.length > 0) {
-    const method = document.getElementById('sizing-method').value;
+    const method = document.getElementById('sizing-method')?.value;
     if (method === 'fibonacci') {
       const average = storyPointingVotes.reduce((sum, vote) => sum + parseInt(vote), 0) / storyPointingVotes.length;
       const closestFib = [1, 2, 3, 5, 8, 13, 21].reduce((prev, curr) => Math.abs(curr - average) < Math.abs(prev - average) ? curr : prev);
@@ -1478,12 +1559,18 @@ function resetStoryPointing() {
 
 function returnToMainMenuFromStoryPointing() {
   hideAllSections();
-  document.getElementById('main-menu').style.display = 'block';
+  const mainMenu = document.getElementById('main-menu');
+  if (mainMenu) {
+    mainMenu.style.display = 'block';
+  }
 }
 
 function startLeanCoffee() {
   hideAllSections();
-  document.getElementById('lean-coffee-section').style.display = 'block';
+  const leanCoffeeSection = document.getElementById('lean-coffee-section');
+  if (leanCoffeeSection) {
+    leanCoffeeSection.style.display = 'block';
+  }
   resetTokens();
 }
 
@@ -1500,7 +1587,7 @@ function saveLeanCoffeeToPDF() {
   const columns = document.querySelectorAll('#lean-coffee-columns-container .column');
   columns.forEach(column => {
     const columnId = column.id;
-    const columnName = document.getElementById(`${columnId}-name`).textContent;
+    const columnName = document.getElementById(`${columnId}-name`)?.textContent || 'Unnamed';
     const feedbackItems = document.getElementById(`${columnId}-feedback-list`);
 
     const sectionTitle = document.createElement('h2');
@@ -1511,8 +1598,8 @@ function saveLeanCoffeeToPDF() {
       const ul = document.createElement('ul');
       Array.from(feedbackItems.children).forEach(item => {
         const li = document.createElement('li');
-        const text = item.childNodes[2].textContent.trim();
-        const votes = item.querySelector('.vote-count').textContent;
+        const text = item.childNodes[2]?.textContent?.trim() || '';
+        const votes = item.querySelector('.vote-count')?.textContent || '0';
         li.textContent = `${text} (Votes: ${votes})`;
         ul.appendChild(li);
       });
@@ -1548,4 +1635,75 @@ function addLeanCoffeeColumn(name = `New Column ${leanCoffeeColumnCount + 1}`) {
 
   const normalizedName = name.toLowerCase();
   if (normalizedName.includes('start') || normalizedName.includes('to discuss') || normalizedName.includes('liked') || normalizedName.includes('keep') || normalizedName.includes('plus') || normalizedName.includes('winds') || normalizedName.includes('fuel') || normalizedName.includes('energy') || normalizedName.includes('trust') || normalizedName.includes('wins')) column.classList.add('start');
-  else if (normalizedName.includes('stop') || normalizedName.includes('discussing') || normalizedName.includes('lacked') || normalizedName.includes('drop')
+  else if (normalizedName.includes('stop') || normalizedName.includes('discussing') || normalizedName.includes('lacked') || normalizedName.includes('drop') || normalizedName.includes('delta') || normalizedName.includes('anchors') || normalizedName.includes('weights') || normalizedName.includes('risky') || normalizedName.includes('challenges')) column.classList.add('stop');
+  else if (normalizedName.includes('continue') || normalizedName.includes('discussed') || normalizedName.includes('learned') || normalizedilanName.includes('add') || normalizedName.includes('rocks') || normalizedName.includes('sky') || normalizedName.includes('build') || normalizedName.includes('cheers')) column.classList.add('continue');
+
+  const header = document.createElement('h3');
+  header.id = `${columnId}-name`;
+  header.textContent = name;
+  column.appendChild(header);
+
+  const buttonContainer = document.createElement('div');
+  buttonContainer.className = 'button-container';
+
+  const editButton = document.createElement('button');
+  editButton.textContent = 'Edit';
+  editButton.className = 'edit';
+  editButton.onclick = () => toggleEditColumnName(columnId);
+  buttonContainer.appendChild(editButton);
+
+  const deleteButton = document.createElement('button');
+  deleteButton.textContent = 'Delete';
+  deleteButton.className = 'delete';
+  deleteButton.onclick = () => {
+    if (confirm('Are you sure you want to delete this column and all its feedback?')) {
+      column.remove();
+      saveAppState();
+    }
+  };
+  buttonContainer.appendChild(deleteButton);
+
+  column.appendChild(buttonContainer);
+
+  const editSection = document.createElement('div');
+  editSection.className = 'column-edit';
+  editSection.id = `${columnId}-edit`;
+  const editInput = document.createElement('input');
+  editInput.type = 'text';
+  editInput.id = `${columnId}-input`;
+  editInput.placeholder = 'Enter column name...';
+  const saveButton = document.createElement('button');
+  saveButton.textContent = 'Save';
+  saveButton.onclick = () => saveColumnName(columnId);
+  editSection.appendChild(editInput);
+  editSection.appendChild(saveButton);
+  column.appendChild(editSection);
+
+  const feedbackInput = document.createElement('input');
+  feedbackInput.type = 'text';
+  feedbackInput.className = 'column-feedback-input';
+  feedbackInput.id = `${columnId}-feedback-input`;
+  feedbackInput.placeholder = 'Add feedback...';
+  column.appendChild(feedbackInput);
+
+  const feedbackButton = document.createElement('button');
+  feedbackButton.textContent = 'Add';
+  feedbackButton.onclick = () => addColumnFeedback(columnId);
+  column.appendChild(feedbackButton);
+
+  const feedbackList = document.createElement('ul');
+  feedbackList.className = 'column-feedback-list';
+  feedbackList.id = `${columnId}-feedback-list`;
+  column.appendChild(feedbackList);
+
+  container.appendChild(column);
+  saveAppState();
+}
+
+function returnToMainMenuFromLeanCoffee() {
+  hideAllSections();
+  const mainMenu = document.getElementById('main-menu');
+  if (mainMenu) {
+    mainMenu.style.display = 'block';
+  }
+}
